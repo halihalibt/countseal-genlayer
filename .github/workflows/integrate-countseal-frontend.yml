@@ -4,7 +4,7 @@ on:
     branches:
       - integration/countseal-frontend
     paths:
-      - .integration/countseal-frontend.tar.gz
+      - .integration/countseal-frontend.tar.xz
 permissions:
   contents: write
 jobs:
@@ -18,9 +18,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Apply frontend source and refresh lockfile
+      - name: Apply frontend files and refresh lockfile
         run: |
-          tar -xzf .integration/countseal-frontend.tar.gz -C .
+          tar -xJf .integration/countseal-frontend.tar.xz -C .
           npm install --package-lock-only --ignore-scripts --no-audit --no-fund
           rm -rf .integration
           rm .github/workflows/integrate-countseal-frontend.yml
