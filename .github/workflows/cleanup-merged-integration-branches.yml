@@ -1,0 +1,23 @@
+name: Clean up merged integration branches
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete merged frontend integration branches
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh api --method DELETE "repos/${REPOSITORY}/git/refs/heads/countseal-frontend-integration"
+          gh api --method DELETE "repos/${REPOSITORY}/git/refs/heads/integration/countseal-frontend"
