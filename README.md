@@ -2,6 +2,8 @@
 
 **Every unit accounted for.** A small-team purchase-order reconciliation application on GenLayer Stable Studionet.
 
+**Live application:** https://halihalibt.github.io/countseal-genlayer/
+
 A supplier calls an item “hexagonal steel bolts, each”; the buyer's purchase order specifies “steel hex-head bolt M8 x 30 mm, one individual bolt.” A spreadsheet cannot safely decide whether these are the same item, and a private model answer cannot protect shared receiving capacity. CountSeal combines independently validated item-identity reasoning with exact onchain quantity accounting across multiple invoices.
 
 The buyer signs immutable purchase terms and declares received quantities. A distinct supplier wallet accepts the exact terms hash and submits immutable invoice lines. GenLayer independently matches descriptions against every PO line. The contract reserves quantities only when every line has one supported target, the exact agreed unit price, and enough unallocated received units. A separate buyer signature approves the exact invoice content hash. Withdrawing or rejecting a reservation releases its capacity; approved quantities remain consumed.
