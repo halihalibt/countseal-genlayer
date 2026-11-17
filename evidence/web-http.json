@@ -1,0 +1,22 @@
+{
+  "checked_at": "2026-11-17T12:04:38.173Z",
+  "mode": "Vite development HTTP smoke test, not browser or wallet acceptance",
+  "checks": [
+    {
+      "path": "/",
+      "status": 200
+    },
+    {
+      "path": "/src/main.tsx",
+      "status": 200
+    },
+    {
+      "path": "/deployment.json",
+      "status": 200
+    },
+    {
+      "path": "/abi.json",
+      "status": 200
+    }
+  ]
+}

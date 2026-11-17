@@ -1,0 +1,11 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {executionOf,verifyReceiptIdentity} from '../src/receipt.mjs';
+const intent={sender:'0xABC',contract:'0xDEF',method:'reconcile',args:['invoice',3]};
+const receipt={from_address:'0xabc',to_address:'0xdef',statusName:'ACCEPTED',txExecutionResultName:'SUCCESS'};
+test('ACCEPTED is never upgraded to FINALIZED',()=>assert.equal(verifyReceiptIdentity(receipt,intent,{method:'reconcile',args:['invoice',3]}).status,'ACCEPTED'));
+test('identity mismatch cannot report success',()=>{for(const r of [{...receipt,from_address:'0xBAD'},{...receipt,to_address:'0xBAD'}])assert.throws(()=>verifyReceiptIdentity(r,intent,{method:'reconcile',args:['invoice',3]}));assert.throws(()=>verifyReceiptIdentity(receipt,intent,{method:'reconcile',args:['invoice',4]}));});
+test('legacy receipt uses the last leader execution',()=>assert.equal(executionOf({consensus_data:{leader_receipt:[{mode:'leader',execution_result:'ERROR'},{mode:'validator',execution_result:'SUCCESS'},{mode:'leader',execution_result:'SUCCESS'}]}}),'SUCCESS'));
+import {auditBundle,approvedCSV} from '../src/audit.mjs';
+const o={id:'o',terms_hash:'h',invoice_ids:['i'],lines:[{quantity:10,unit_price:125,description:'Steel M8 bolt'}],reserved:[0],approved:[4],received:[6],currency:'USD'};
+const inv={id:'i',order_id:'o',terms_hash:'h',state:'APPROVED',reference:'=INVOICE()',allocation:[4],lines:[{description:'Steel M8 bolt',quantity:4,unit_price:125}],mapping:{rows:[{status:'MATCH',target:0,invoice_quote:'Steel M8 bolt',order_quote:'Steel M8 bolt'}]}};
+test('snapshot audit detects missing and double-counted invoices',()=>{assert.deepEqual(auditBundle(o,[inv]).available,[2]);assert.throws(()=>auditBundle(o,[]));assert.throws(()=>auditBundle({...o,approved:[5]},[inv]));});
+test('approved CSV excludes pending units and escapes spreadsheet formulas',()=>{assert.ok(approvedCSV(o,[inv]).includes("'=INVOICE()"));const pending={...inv,state:'RESERVED'};assert.equal(approvedCSV({...o,approved:[0],reserved:[4]},[pending]).split('\r\n').length,1)});

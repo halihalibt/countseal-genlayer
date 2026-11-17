@@ -1,0 +1,194 @@
+{
+  "ctor": {
+    "params": [],
+    "kwparams": {}
+  },
+  "methods": {
+    "accept_order": {
+      "params": [
+        [
+          "oid",
+          "string"
+        ],
+        [
+          "expected_revision",
+          "int"
+        ],
+        [
+          "terms_hash",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": false,
+      "ret": "string",
+      "payable": false
+    },
+    "create_order": {
+      "params": [
+        [
+          "reference",
+          "string"
+        ],
+        [
+          "title",
+          "string"
+        ],
+        [
+          "supplier",
+          "string"
+        ],
+        [
+          "currency",
+          "string"
+        ],
+        [
+          "payload",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": false,
+      "ret": "string",
+      "payable": false
+    },
+    "decide_invoice": {
+      "params": [
+        [
+          "iid",
+          "string"
+        ],
+        [
+          "expected_revision",
+          "int"
+        ],
+        [
+          "approve",
+          "bool"
+        ],
+        [
+          "content_hash",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": false,
+      "ret": "string",
+      "payable": false
+    },
+    "get_invoice": {
+      "params": [
+        [
+          "iid",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "string"
+    },
+    "get_order": {
+      "params": [
+        [
+          "oid",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "string"
+    },
+    "get_protocol": {
+      "params": [],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "string"
+    },
+    "list_orders": {
+      "params": [],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "string"
+    },
+    "reconcile": {
+      "params": [
+        [
+          "iid",
+          "string"
+        ],
+        [
+          "expected_revision",
+          "int"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": false,
+      "ret": "string",
+      "payable": false
+    },
+    "record_receipt": {
+      "params": [
+        [
+          "oid",
+          "string"
+        ],
+        [
+          "expected_revision",
+          "int"
+        ],
+        [
+          "reference",
+          "string"
+        ],
+        [
+          "quantities",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": false,
+      "ret": "string",
+      "payable": false
+    },
+    "submit_invoice": {
+      "params": [
+        [
+          "oid",
+          "string"
+        ],
+        [
+          "expected_revision",
+          "int"
+        ],
+        [
+          "reference",
+          "string"
+        ],
+        [
+          "payload",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": false,
+      "ret": "string",
+      "payable": false
+    },
+    "withdraw_invoice": {
+      "params": [
+        [
+          "iid",
+          "string"
+        ],
+        [
+          "expected_revision",
+          "int"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": false,
+      "ret": "string",
+      "payable": false
+    }
+  }
+}

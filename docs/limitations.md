@@ -1,0 +1,12 @@
+# Operational limits
+
+- Stable Studionet is a test network. Availability, faucet behavior, validator models and retained history may change. No production-network or SLA claim is made.
+- All contract inputs, events and outcomes are public. Do not submit customer/supplier identities, invoice scans, bank information, confidential descriptions or real commercial records. The included live scenarios are deliberately synthetic **business inputs sent as real transactions**, not simulated chain outputs.
+- Signed receiving declarations do not prove a physical delivery, count, quality inspection or ownership. Independent validator reasoning authenticates neither party nor document provenance.
+- The app prevents exceeding declared received quantities **within one PO**, including multiple active invoice reservations. It cannot detect the same invoice submitted under different orders, omitted offchain invoices, false receipts or colluding signers. Different wallet addresses do not establish different humans.
+- The immutable order fixes quantity caps and prices. There are no amendments, tax, discount, fractional quantity, unit conversion, currency conversion, payment transfer, credit note or reversal of an approved invoice. Use a new order for different terms; keep external accounting records for reversals.
+- Each deployment supports at most 256 orders, each with 8 PO lines, 64 receiving declarations and 64 invoice records. Each invoice supports 8 lines. This bounded workload is for small procurement groups, not ERP-scale indexing. A new deployment does not automatically migrate prior records.
+- Consensus can be wrong, unavailable or fail to converge. Ambiguous matching stops capacity allocation. There is no human override that pretends the network agreed. Parties may reject or withdraw and submit clearer descriptions under a new reference.
+- A supplier can reserve legitimate capacity until buyer rejection or supplier withdrawal. There is no automatic expiry, because expiring an in-flight invoice could unexpectedly make another invoice eligible. Buyer rejection is the recovery path.
+- The frontend discovers standards-compliant injected wallets; individual extension combinations must be tested in the target browser. Disposable signers are memory-only: closing or reloading loses the keys. Stored pending hashes survive tab reload, but lost private keys cannot be recovered.
+- No background service sends payments, approves invoices or signs for a wallet. The optional Node service serves public finalized reads and CSV only.
