@@ -1,51 +1,397 @@
-import React,{useEffect,useState,useRef} from 'react';import {createRoot} from 'react-dom/client';
-import {connect,discover,session,read,verify,submit,poll,download,explainError,explorer,type Wallet,type Connection} from './chain';
-import {auditBundle,canonical,approvedCSV} from './audit.mjs';
-import {hash} from './chain';
-import type {Deployment,Order,Invoice,Line,TxEntry} from './types';import './style.css';
-const pending=(t:TxEntry)=>!['FINALIZED','UNDETERMINED','CANCELED'].includes(t.status);
-const shorten=(s:string)=>s.slice(0,8)+'…'+s.slice(-6);
-const emptyLine=():Line=>({description:'',quantity:1,unit_price:100});
-function LineEditor({value,onChange}:{value:Line[];onChange:(x:Line[])=>void}){return <><p className="hint">Use exact physical specifications and unit/pack basis. Unit price is an integer in minor units (125 = 1.25).</p>{value.map((l,i)=><div className="line-editor" key={i}><label>Item {i+1}<textarea required minLength={5} maxLength={700} value={l.description} onChange={e=>onChange(value.map((x,j)=>i===j?{...x,description:e.target.value}:x))}/></label><label>Quantity<input required type="number" min={1} max={1000000} step={1} value={l.quantity} onChange={e=>onChange(value.map((x,j)=>i===j?{...x,quantity:Number(e.target.value)}:x))}/></label><label>Unit price (minor)<input required type="number" min={1} max={100000000} step={1} value={l.unit_price} onChange={e=>onChange(value.map((x,j)=>i===j?{...x,unit_price:Number(e.target.value)}:x))}/></label><button type="button" disabled={value.length===1} onClick={()=>onChange(value.filter((_,j)=>j!==i))}>Remove</button></div>)}<button type="button" disabled={value.length>=8} onClick={()=>onChange([...value,emptyLine()])}>Add item</button></>}
-function App(){
- const [d,setD]=useState<Deployment>();const [source,setSource]=useState(false);const [wallets,setWallets]=useState<Wallet[]>([]);const [connections,setConnections]=useState<Connection[]>([]);const [c,setC]=useState<Connection>();const [walletOpen,setWalletOpen]=useState(false);
- const [ids,setIds]=useState<string[]>([]);const [selected,setSelected]=useState(new URLSearchParams(location.search).get('order')||'');const [o,setO]=useState<Order>();const [invoices,setInvoices]=useState<Invoice[]>([]);
- const [busy,setBusy]=useState(false);const [reading,setReading]=useState(false);const [issue,setIssue]=useState('');const [error,setError]=useState('');const [lastRead,setLastRead]=useState('');
- const [tab,setTab]=useState<'orders'|'new'|'transactions'>('orders');
- const [txs,setTxs]=useState<TxEntry[]>(()=>{try{return JSON.parse(sessionStorage.getItem('countseal-transactions')||'[]')}catch{return []}});const txRef=useRef(txs);txRef.current=txs;
- const [ref,setRef]=useState('');const [title,setTitle]=useState('');const [supplier,setSupplier]=useState('');const [currency,setCurrency]=useState('USD');const [items,setItems]=useState<Line[]>([emptyLine()]);
- const [invoiceRef,setInvoiceRef]=useState('');const [invoiceLines,setInvoiceLines]=useState<Line[]>([emptyLine()]);const [receiptRef,setReceiptRef]=useState('');const [counts,setCounts]=useState<number[]>([]);
- const blocked=busy||txs.some(pending)||!c||!source||!!issue||reading;
- const buyer=!!o&&c?.address===o.buyer,seller=!!o&&c?.address===o.supplier;
- const mounted=useRef(true);
- async function load(config=d,chosen=selected){if(!config)return;setReading(true);try{
-  await verify(config);setSource(true);
-  const list=await read<string[]>(config,'list_orders');if(!Array.isArray(list)||list.some(x=>typeof x!=='string'))throw Error('Invalid order index response');setIds(list);
-  const pick=chosen||(list.includes(config.verified_order||'')?config.verified_order:list[0]);
-  if(pick){const order=await read<Order>(config,'get_order',[pick]);const inv:Invoice[]=[];for(const id of order.invoice_ids)inv.push(await read<Invoice>(config,'get_invoice',[id]));const second=await read<Order>(config,'get_order',[pick]);if(second.revision!==order.revision)throw Error('Order changed during read. Refresh to obtain a coherent snapshot.');auditBundle(order,inv);if(await hash(canonical({id:order.id,buyer:order.buyer,supplier:order.supplier,currency:order.currency,lines:order.lines}))!==order.terms_hash)throw Error('Terms hash mismatch');for(const x of inv)if(await hash(canonical(x.lines))!==x.content_hash)throw Error('Invoice content hash mismatch');setO(order);setInvoices(inv);setSelected(pick);setCounts(prev=>prev.length===order.lines.length?prev:order.lines.map(()=>0));}else {setO(undefined);setInvoices([]);}
-  setIssue('');setLastRead(new Date().toISOString());
- }catch(e){setIssue(explainError(e));}finally{setReading(false);}}
- useEffect(()=>{mounted.current=true;const stop=discover(w=>setWallets(old=>old.some(x=>x.provider===w.provider)?old:[...old,w]));fetch(import.meta.env.BASE_URL+'deployment.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('Deployment metadata could not be loaded.');return r.json()}).then(config=>{setD(config);void load(config)}).catch(e=>setIssue(explainError(e)));return()=>{mounted.current=false;stop()}},[]);
- useEffect(()=>{if(!d)return;const id=setInterval(()=>void load(),30000);return()=>clearInterval(id)},[d,selected]);
- useEffect(()=>{if(!c?.provider?.on)return;const provider=c.provider;const changed=()=>{setC(undefined);setError('Wallet account or network changed. Reconnect to review the current signer.');};provider.on?.('accountsChanged',changed);provider.on?.('chainChanged',changed);return()=>{provider.removeListener?.('accountsChanged',changed);provider.removeListener?.('chainChanged',changed)}},[c]);
- useEffect(()=>{sessionStorage.setItem('countseal-transactions',JSON.stringify(txs))},[txs]);
- useEffect(()=>{let stopped=false;let timer:ReturnType<typeof setTimeout>;async function tick(){for(const t of txRef.current.filter(pending)){try{const updated=await poll(t);if(stopped)return;setTxs(old=>old.map(x=>x.hash===t.hash?updated:x));if(updated.status==='FINALIZED'&&updated.execution==='SUCCESS')await load();}catch(e){if(!stopped)setTxs(old=>old.map(x=>x.hash===t.hash?{...x,error:explainError(e)}:x));}}if(!stopped)timer=setTimeout(tick,5000)}void tick();return()=>{stopped=true;clearTimeout(timer)}},[d,selected]);
- async function action(method:string,args:any[]){if(!d||!c||blocked)return;setError('');setBusy(true);try{const t=await submit(d,c,method,args);setTxs(old=>[t,...old]);setTab('transactions')}catch(e){setError(explainError(e))}finally{setBusy(false)}}
- async function addWallet(w?:Wallet){setBusy(true);setError('');try{const x=w?await connect(w):await session();setConnections(old=>[...old.filter(y=>y.address!==x.address),x]);setC(x);setWalletOpen(false)}catch(e){setError(explainError(e))}finally{setBusy(false)}}
- function choose(id:string){setO(undefined);setInvoices([]);setSelected(id);setCounts([]);const url=new URL(location.href);url.searchParams.set('order',id);history.replaceState(null,'',url);void load(d,id);setTab('orders')}
- const money=(v:number)=>new Intl.NumberFormat('en',{style:'currency',currency:o?.currency||currency}).format(v/100);
- return <><header><div><strong>CountSeal</strong><span>Every unit accounted for</span></div><div className="header-actions"><small>Stable Studionet · 61999 · {source?'Source verified':'Verifying source'}</small><button onClick={()=>setWalletOpen(!walletOpen)}>{c?shorten(c.address):'Connect wallet'}</button></div></header>
- <main><div className="intro"><h1>Match the item.<br/>Protect the received quantity.</h1><p>Reconcile supplier descriptions against immutable purchase terms. Reserve only received units. Confirm with a buyer signature.</p><p className="notice">Public testnet records only. Do not enter personal, confidential or commercial invoice data. Approval records reconciliation; it does not pay an invoice or prove a physical delivery.</p></div>
- <nav>{(['orders','new','transactions'] as const).map(t=><button aria-current={tab===t?'page':undefined} key={t} onClick={()=>setTab(t)}>{t==='orders'?'Purchase orders':t==='new'?'New purchase order':`Transactions (${txs.length})`}</button>)}<button disabled={reading} onClick={()=>void load()}>{reading?'Reading…':'Refresh chain data'}</button></nav>
- {issue&&<div role="status" className="notice">Connection / read status: {issue} Visible records may be from the last read. Writes pause until a successful refresh.</div>}{error&&<div role="alert" className="notice">{error}<button onClick={()=>setError('')}>Dismiss</button></div>}
- {busy&&<p role="status">Waiting for the wallet request…</p>}{txs.some(pending)&&<p role="status" className="notice">A transaction is pending. Monitoring continues here and resumes after reload. Do not resubmit it.</p>}
- {walletOpen&&<section aria-label="Wallet connection"><h2>Choose a wallet</h2>{wallets.map(w=><button key={w.id} disabled={busy} onClick={()=>void addWallet(w)}>{w.name}</button>)}{!wallets.length&&<p>No injected provider detected. Enable a compatible wallet extension, then refresh.</p>}<p className="hint">EIP-6963 discovery with EIP-1193 legacy fallback. Wallet extension compatibility depends on the wallet version.</p><details><summary>Temporary Studionet signers</summary><p>Disposable real keys stay in this tab’s memory only. Reloading loses their control. Use two signers to try buyer and supplier roles. Never deposit assets.</p><button disabled={busy} onClick={()=>void addWallet()}>Create temporary signer</button></details>{connections.map((x,i)=><button key={x.address} onClick={()=>{setC(x);setWalletOpen(false)}}>Use signer {i+1} · {shorten(x.address)}</button>)}{c&&<button onClick={()=>{setC(undefined);setWalletOpen(false)}}>Disconnect</button>}</section>}
- {tab==='new'&&<section><h2>Create immutable purchase terms</h2><p>The supplier must separately accept the exact terms hash before you can record receipts.</p><form onSubmit={e=>{e.preventDefault();void action('create_order',[ref,title,supplier,currency,JSON.stringify(items)])}}><div className="form-row"><label>Reference<input required pattern="[a-z0-9-]{3,40}" value={ref} onChange={e=>setRef(e.target.value)} placeholder="workshop-order-001"/></label><label>Title<input required minLength={3} maxLength={100} value={title} onChange={e=>setTitle(e.target.value)}/></label></div><div className="form-row"><label>Supplier wallet<input required pattern="0x[0-9a-fA-F]{40}" value={supplier} onChange={e=>setSupplier(e.target.value)}/></label><label>Currency (two decimal places)<select value={currency} onChange={e=>setCurrency(e.target.value)}>{['USD','EUR','GBP','SGD'].map(x=><option key={x}>{x}</option>)}</select></label></div><LineEditor value={items} onChange={setItems}/><p><button className="primary" disabled={blocked}>Sign & create order</button></p></form></section>}
- {tab==='orders'&&<><section><label>Finalized purchase orders<select aria-label="Select purchase order" value={selected} onChange={e=>choose(e.target.value)}><option value="">Select an order</option>{ids.map(id=><option key={id} value={id}>{id}</option>)}</select></label><small>{lastRead?'Last coherent finalized read: '+new Date(lastRead).toLocaleString():'Waiting for finalized chain data…'}</small>{!ids.length&&lastRead&&!issue&&<p>No orders exist yet. Create the first one.</p>}</section>{o&&<><section><div className="title-row"><h2>{o.title}</h2><span className="badge">{o.accepted?'Terms accepted':'Awaiting supplier'}</span></div><p className="mono">{o.id}</p><p>Buyer <code>{o.buyer}</code><br/>Supplier <code>{o.supplier}</code></p><p>You are: <strong>{buyer?'Buyer':seller?'Supplier':c?'Observer':'Not connected'}</strong> · Revision {o.revision}</p><details><summary>Immutable terms hash</summary><code>{o.terms_hash}</code></details>{seller&&!o.accepted&&<button className="primary" disabled={blocked} onClick={()=>void action('accept_order',[o.id,o.revision,o.terms_hash])}>Accept these exact purchase terms</button>}<div className="table-wrap"><table><thead><tr><th>PO item / unit basis</th><th>Ordered</th><th>Received</th><th>Reserved</th><th>Approved</th><th>Available</th><th>Unit price</th></tr></thead><tbody>{o.lines.map((l,i)=><tr key={i}><td>#{i+1} {l.description}</td><td>{l.quantity}</td><td>{o.received[i]}</td><td>{o.reserved[i]}</td><td>{o.approved[i]}</td><td>{o.received[i]-o.reserved[i]-o.approved[i]}</td><td>{money(l.unit_price)}</td></tr>)}</tbody></table></div><p className="hint">For every PO line: approved + reserved ≤ received ≤ ordered. Buyer-declared receipts are not independently proven physical events.</p><button onClick={()=>download('countseal-finalized-record.json',{deployment:d,read_at:lastRead,state_variant:'latest-final',order:o,invoices})}>Export finalized record</button><button onClick={()=>{const blob=new Blob([approvedCSV(o,invoices)],{type:'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='countseal-approved-lines.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),500)}}>Export approved lines CSV</button></section>
- {buyer&&o.accepted&&<section><h2>Record received units</h2><form onSubmit={e=>{e.preventDefault();void action('record_receipt',[o.id,o.revision,receiptRef,JSON.stringify(counts)])}}><label>Unique delivery reference<input required pattern="[a-z0-9-]{3,40}" value={receiptRef} onChange={e=>setReceiptRef(e.target.value)}/></label><div className="form-row">{o.lines.map((l,i)=><label key={i}>Item #{i+1} additional received units<input required type="number" min={0} max={l.quantity-o.received[i]} step={1} value={counts[i]??0} onChange={e=>setCounts(o.lines.map((_,j)=>j===i?Number(e.target.value):counts[j]||0))}/></label>)}</div><button disabled={blocked||!counts.some(x=>x>0)}>Sign receipt declaration</button></form></section>}
- {seller&&o.accepted&&<section><h2>Submit an invoice</h2><p>Immutable lines. Correct a mistake by withdrawing and submitting a new unique reference.</p><form onSubmit={e=>{e.preventDefault();void action('submit_invoice',[o.id,o.revision,invoiceRef,JSON.stringify(invoiceLines)])}}><label>Unique invoice reference<input required pattern="[a-z0-9-]{3,40}" value={invoiceRef} onChange={e=>setInvoiceRef(e.target.value)}/></label><LineEditor value={invoiceLines} onChange={setInvoiceLines}/><p><button disabled={blocked}>Sign & submit invoice</button></p></form></section>}
- <section><h2>Invoice reconciliation</h2>{!invoices.length&&<p>No supplier invoices for this order.</p>}{invoices.map(inv=><article key={inv.id}><div className="title-row"><h3>{inv.reference}</h3><span className="badge">{inv.state.replaceAll('_',' ')}</span></div><p>Total: {money(inv.lines.reduce((n,l)=>n+l.quantity*l.unit_price,0))}</p>{inv.lines.map((l,i)=><div className="invoice-line" key={i}><p><strong>Line {i+1}</strong> · {l.quantity} × {money(l.unit_price)}<br/>{l.description}</p>{inv.mapping&&<p className="mapping">{inv.mapping.rows[i].status}{inv.mapping.rows[i].target>=0?` → PO item #${inv.mapping.rows[i].target+1}`:''}<br/><q>{inv.mapping.rows[i].invoice_quote}</q>{inv.mapping.rows[i].order_quote&&<><br/>PO: <q>{inv.mapping.rows[i].order_quote}</q></>}</p>}</div>)}{inv.reasons.length>0&&<ul>{inv.reasons.map((r,i)=><li key={i}>{r.code==='INSUFFICIENT_RECEIVED'?'PO item':'Invoice line'} #{r.line+1}: {r.code.replaceAll('_',' ')}{r.available!==undefined?` (${r.available} units available)`:''}</li>)}</ul>}<p>{inv.state==='APPROVED'?'Approved PO units':inv.state==='RESERVED'?'Reserved PO units':'Historical matched PO units (not active)'}: {inv.allocation.join(' / ')}</p><details><summary>Content & consensus binding</summary><p>Content: <code>{inv.content_hash}</code><br/>Terms: <code>{inv.terms_hash}</code><br/>Semantic input: <code>{inv.basis_hash||'Not assessed'}</code><br/>Basis order revision: {inv.basis_revision??'—'}</p></details><div className="actions">{(buyer||seller)&&inv.state==='SUBMITTED'&&<button disabled={blocked} onClick={()=>void action('reconcile',[inv.id,o.revision])}>Reconcile with GenLayer consensus</button>}{buyer&&inv.state==='RESERVED'&&<button className="primary" disabled={blocked} onClick={()=>void action('decide_invoice',[inv.id,o.revision,true,inv.content_hash])}>Approve exact invoice</button>}{buyer&&['SUBMITTED','RESERVED','BLOCKED','REVIEW_REQUIRED'].includes(inv.state)&&<button disabled={blocked} onClick={()=>void action('decide_invoice',[inv.id,o.revision,false,inv.content_hash])}>Reject invoice</button>}{seller&&['SUBMITTED','RESERVED','BLOCKED','REVIEW_REQUIRED'].includes(inv.state)&&<button disabled={blocked} onClick={()=>void action('withdraw_invoice',[inv.id,o.revision])}>Withdraw & release reservation</button>}</div></article>)}</section><section><h2>Signed event history</h2><details><summary>{o.events.length} events · revision {o.revision}</summary>{o.events.map(e=><div className="event" key={e.revision}><strong>#{e.revision} {e.action}</strong><p>{new Date(e.at*1000).toLocaleString()} · <code>{e.actor}</code></p><pre>{JSON.stringify(e.subject,null,2)}</pre></div>)}</details></section></>}</>}
- {tab==='transactions'&&<section><h2>Transaction center</h2><p>Only FINALIZED + SUCCESS confirms execution. A successful reconciliation can still produce BLOCKED or REVIEW REQUIRED. Inspect its finalized invoice state.</p>{!txs.length&&<p>No transactions submitted from this tab session.</p>}{txs.map(t=><article key={t.hash}><h3>{t.method}</h3><p><span className="badge">{t.status}</span> {t.execution||''}</p><a href={`${explorer}/tx/${t.hash}`} target="_blank" rel="noreferrer">{t.hash}</a><p>Signer: <code>{t.sender}</code></p>{t.error&&<p className="notice">Monitoring status: {t.error} The hash remains recorded; monitoring will retry.</p>}{t.status==='FINALIZED'&&t.execution!=='SUCCESS'&&<p className="notice">Execution failed. No successful business action is claimed.</p>}{t.status==='FINALIZED'&&t.execution==='SUCCESS'&&<button onClick={()=>{setTab('orders');void load()}}>Read finalized business state</button>}<details><summary>Signed intent</summary><pre>{JSON.stringify(t.args,null,2)}</pre></details></article>)}</section>}
- <footer><a href="https://github.com/halihalibt/countseal-genlayer" target="_blank" rel="noreferrer">Source & documentation</a>{d&&<a href={`${explorer}/address/${d.contract}`} target="_blank" rel="noreferrer">Deployed contract</a>}<span>No asset transfers · Public testnet · English</span></footer></main></>;
+import React, { useEffect, useState, useRef } from 'react';
+import { createRoot } from 'react-dom/client';
+import {
+  connect, discover, session, read, verify, submit, poll, download,
+  explainError, type Wallet, type Connection,
+} from './chain';
+import { hash } from './chain';
+import { auditBundle, canonical, approvedCSV } from './audit.mjs';
+import type { Deployment, Order, Invoice, Line, TxEntry } from './types';
+import { Header } from './components/Header';
+import { Navigation, type TabId } from './components/Navigation';
+import { WalletModal } from './components/WalletModal';
+import { OrderList } from './components/OrderList';
+import { OrderDetail } from './components/OrderDetail';
+import { InvoiceForm } from './components/InvoiceForm';
+import { InvoiceList } from './components/InvoiceList';
+import { NewOrderForm } from './components/NewOrderForm';
+import { EventHistory } from './components/EventHistory';
+import { TransactionCenter } from './components/TransactionCenter';
+import { Footer } from './components/Footer';
+import { AlertTriangle, AlertCircle, Loader, X, Info } from 'lucide-react';
+import './style.css';
+
+const pending = (t: TxEntry) => !['FINALIZED', 'UNDETERMINED', 'CANCELED'].includes(t.status);
+
+function App() {
+  /* ---- Deployment & source ---- */
+  const [d, setD] = useState<Deployment>();
+  const [source, setSource] = useState(false);
+
+  /* ---- Wallet ---- */
+  const [wallets, setWallets] = useState<Wallet[]>([]);
+  const [connections, setConnections] = useState<Connection[]>([]);
+  const [c, setC] = useState<Connection>();
+  const [walletOpen, setWalletOpen] = useState(false);
+
+  /* ---- Data ---- */
+  const [ids, setIds] = useState<string[]>([]);
+  const [selected, setSelected] = useState(
+    new URLSearchParams(location.search).get('order') || ''
+  );
+  const [o, setO] = useState<Order>();
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
+
+  /* ---- State ---- */
+  const [busy, setBusy] = useState(false);
+  const [reading, setReading] = useState(false);
+  const [issue, setIssue] = useState('');
+  const [error, setError] = useState('');
+  const [lastRead, setLastRead] = useState('');
+
+  /* ---- UI ---- */
+  const [tab, setTab] = useState<TabId>('orders');
+
+  /* ---- Transactions ---- */
+  const [txs, setTxs] = useState<TxEntry[]>(() => {
+    try { return JSON.parse(sessionStorage.getItem('countseal-transactions') || '[]'); }
+    catch { return []; }
+  });
+  const txRef = useRef(txs);
+  txRef.current = txs;
+
+  /* ---- Derived ---- */
+  const blocked = busy || txs.some(pending) || !c || !source || !!issue || reading;
+  const buyer = !!o && c?.address === o.buyer;
+  const seller = !!o && c?.address === o.supplier;
+  const mounted = useRef(true);
+
+  /* ======== DATA LOADING ======== */
+  async function load(config = d, chosen = selected) {
+    if (!config) return;
+    setReading(true);
+    try {
+      await verify(config);
+      setSource(true);
+      const list = await read<string[]>(config, 'list_orders');
+      if (!Array.isArray(list) || list.some(x => typeof x !== 'string'))
+        throw Error('Invalid order index response');
+      setIds(list);
+
+      const pick = chosen || (list.includes(config.verified_order || '') ? config.verified_order : list[0]);
+      if (pick) {
+        const order = await read<Order>(config, 'get_order', [pick]);
+        const inv: Invoice[] = [];
+        for (const id of order.invoice_ids)
+          inv.push(await read<Invoice>(config, 'get_invoice', [id]));
+        const second = await read<Order>(config, 'get_order', [pick]);
+        if (second.revision !== order.revision)
+          throw Error('Order changed during read. Refresh to obtain a coherent snapshot.');
+        auditBundle(order, inv);
+        if (await hash(canonical({
+          id: order.id, buyer: order.buyer, supplier: order.supplier,
+          currency: order.currency, lines: order.lines
+        })) !== order.terms_hash)
+          throw Error('Terms hash mismatch');
+        for (const x of inv)
+          if (await hash(canonical(x.lines)) !== x.content_hash)
+            throw Error('Invoice content hash mismatch');
+        setO(order);
+        setInvoices(inv);
+        setSelected(pick);
+      } else {
+        setO(undefined);
+        setInvoices([]);
+      }
+      setIssue('');
+      setLastRead(new Date().toISOString());
+    } catch (e) {
+      setIssue(explainError(e));
+    } finally {
+      setReading(false);
+    }
+  }
+
+  /* ======== EFFECTS ======== */
+  useEffect(() => {
+    mounted.current = true;
+    const stop = discover(w =>
+      setWallets(old => old.some(x => x.provider === w.provider) ? old : [...old, w])
+    );
+    fetch(import.meta.env.BASE_URL + 'deployment.json', { cache: 'no-cache' })
+      .then(r => { if (!r.ok) throw Error('Deployment metadata could not be loaded.'); return r.json(); })
+      .then(config => { setD(config); void load(config); })
+      .catch(e => setIssue(explainError(e)));
+    return () => { mounted.current = false; stop(); };
+  }, []);
+
+  useEffect(() => {
+    if (!d) return;
+    const id = setInterval(() => void load(), 30000);
+    return () => clearInterval(id);
+  }, [d, selected]);
+
+  useEffect(() => {
+    if (!c?.provider?.on) return;
+    const provider = c.provider;
+    const changed = () => {
+      setC(undefined);
+      setError('Wallet account or network changed. Reconnect to review the current signer.');
+    };
+    provider.on?.('accountsChanged', changed);
+    provider.on?.('chainChanged', changed);
+    return () => {
+      provider.removeListener?.('accountsChanged', changed);
+      provider.removeListener?.('chainChanged', changed);
+    };
+  }, [c]);
+
+  useEffect(() => {
+    sessionStorage.setItem('countseal-transactions', JSON.stringify(txs));
+  }, [txs]);
+
+  useEffect(() => {
+    let stopped = false;
+    let timer: ReturnType<typeof setTimeout>;
+    async function tick() {
+      for (const t of txRef.current.filter(pending)) {
+        try {
+          const updated = await poll(t);
+          if (stopped) return;
+          setTxs(old => old.map(x => x.hash === t.hash ? updated : x));
+          if (updated.status === 'FINALIZED' && updated.execution === 'SUCCESS')
+            await load();
+        } catch (e) {
+          if (!stopped)
+            setTxs(old => old.map(x => x.hash === t.hash ? { ...x, error: explainError(e) } : x));
+        }
+      }
+      if (!stopped) timer = setTimeout(tick, 5000);
+    }
+    void tick();
+    return () => { stopped = true; clearTimeout(timer); };
+  }, [d, selected]);
+
+  /* ======== ACTIONS ======== */
+  async function action(method: string, args: any[]) {
+    if (!d || !c || blocked) return;
+    setError('');
+    setBusy(true);
+    try {
+      const t = await submit(d, c, method, args);
+      setTxs(old => [t, ...old]);
+      setTab('transactions');
+    } catch (e) {
+      setError(explainError(e));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function addWallet(w?: Wallet) {
+    setBusy(true);
+    setError('');
+    try {
+      const x = w ? await connect(w) : await session();
+      setConnections(old => [...old.filter(y => y.address !== x.address), x]);
+      setC(x);
+      setWalletOpen(false);
+    } catch (e) {
+      setError(explainError(e));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function choose(id: string) {
+    setO(undefined);
+    setInvoices([]);
+    setSelected(id);
+    const url = new URL(location.href);
+    url.searchParams.set('order', id);
+    history.replaceState(null, '', url);
+    void load(d, id);
+    setTab('orders');
+  }
+
+  /* ======== RENDER ======== */
+  return (
+    <div className="app-layout">
+      <Header
+        sourceVerified={source}
+        connection={c}
+        onWalletClick={() => setWalletOpen(!walletOpen)}
+      />
+
+      <WalletModal
+        open={walletOpen}
+        onClose={() => setWalletOpen(false)}
+        wallets={wallets}
+        connections={connections}
+        currentConnection={c}
+        busy={busy}
+        onConnect={w => void addWallet(w)}
+        onSession={() => void addWallet()}
+        onSelect={x => { setC(x); setWalletOpen(false); }}
+        onDisconnect={() => { setC(undefined); setWalletOpen(false); }}
+      />
+
+      <div className="app-body">
+        {/* Page intro */}
+        <div className="page-intro">
+          <h1>Procurement Reconciliation Workspace</h1>
+          <p>
+            Reconcile supplier descriptions against immutable purchase terms.
+            Reserve only received units. Confirm with a buyer signature.
+          </p>
+          <div className="testnet-notice">
+            <AlertTriangle size={14} />
+            <span>
+              Public testnet records only. Do not enter personal, confidential or commercial invoice data.
+              Approval records reconciliation; it does not pay an invoice or prove a physical delivery.
+            </span>
+          </div>
+        </div>
+
+        <Navigation
+          active={tab}
+          txCount={txs.length}
+          reading={reading}
+          onTabChange={setTab}
+          onRefresh={() => void load()}
+        />
+
+        {/* System alerts */}
+        {issue && (
+          <div className="alert alert-warning" role="status">
+            <AlertCircle size={16} />
+            <div style={{ flex: 1 }}>
+              <strong>Connection / Read Status</strong>
+              <p style={{ margin: '4px 0 0', fontSize: 13 }}>
+                {issue} Visible records may be from the last read. Writes pause until a successful refresh.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {error && (
+          <div className="alert alert-error" role="alert">
+            <AlertCircle size={16} />
+            <span style={{ flex: 1 }}>{error}</span>
+            <button className="btn btn-ghost btn-sm" onClick={() => setError('')}>
+              <X size={14} />
+            </button>
+          </div>
+        )}
+
+        {busy && (
+          <div className="alert alert-info" role="status">
+            <Loader size={16} className="spinner" />
+            <span>Waiting for the wallet request…</span>
+          </div>
+        )}
+
+        {txs.some(pending) && (
+          <div className="alert alert-neutral" role="status">
+            <Info size={16} />
+            <span>
+              A transaction is pending. Monitoring continues here and resumes after reload. Do not resubmit it.
+            </span>
+          </div>
+        )}
+
+        {/* TAB: Purchase orders */}
+        {tab === 'orders' && (
+          <>
+            <OrderList
+              ids={ids}
+              selected={selected}
+              lastRead={lastRead}
+              issue={issue}
+              reading={reading}
+              onSelect={choose}
+            />
+
+            {o && (
+              <>
+                <OrderDetail
+                  order={o}
+                  invoices={invoices}
+                  deployment={d!}
+                  lastRead={lastRead}
+                  buyer={buyer}
+                  seller={seller}
+                  connected={!!c}
+                  blocked={blocked}
+                  currency={o.currency}
+                  onAcceptTerms={() => void action('accept_order', [o.id, o.revision, o.terms_hash])}
+                  onRecordReceipt={(ref, counts) => void action('record_receipt', [o.id, o.revision, ref, JSON.stringify(counts)])}
+                  onExportJSON={() => download('countseal-finalized-record.json', {
+                    deployment: d, read_at: lastRead, state_variant: 'latest-final',
+                    order: o, invoices,
+                  })}
+                  onExportCSV={() => {
+                    const blob = new Blob([approvedCSV(o, invoices)], { type: 'text/csv;charset=utf-8' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'countseal-approved-lines.csv';
+                    a.click();
+                    setTimeout(() => URL.revokeObjectURL(url), 500);
+                  }}
+                />
+
+                {/* Invoice submission (supplier only) */}
+                {seller && o.accepted && (
+                  <InvoiceForm
+                    blocked={blocked}
+                    currency={o.currency}
+                    onSubmit={(ref, lines) => void action('submit_invoice', [o.id, o.revision, ref, JSON.stringify(lines)])}
+                  />
+                )}
+
+                {/* Invoice reconciliation */}
+                <InvoiceList
+                  invoices={invoices}
+                  order={o}
+                  buyer={buyer}
+                  seller={seller}
+                  blocked={blocked}
+                  onReconcile={invId => void action('reconcile', [invId, o.revision])}
+                  onApprove={(invId, contentHash) => void action('decide_invoice', [invId, o.revision, true, contentHash])}
+                  onReject={(invId, contentHash) => void action('decide_invoice', [invId, o.revision, false, contentHash])}
+                  onWithdraw={invId => void action('withdraw_invoice', [invId, o.revision])}
+                />
+
+                {/* Event history */}
+                <EventHistory order={o} />
+              </>
+            )}
+          </>
+        )}
+
+        {/* TAB: New order */}
+        {tab === 'new' && (
+          <NewOrderForm
+            blocked={blocked}
+            onSubmit={(ref, title, supplier, currency, items) =>
+              void action('create_order', [ref, title, supplier, currency, JSON.stringify(items)])
+            }
+          />
+        )}
+
+        {/* TAB: Transactions */}
+        {tab === 'transactions' && (
+          <TransactionCenter
+            txs={txs}
+            onViewOrder={() => { setTab('orders'); void load(); }}
+          />
+        )}
+      </div>
+
+      <Footer deployment={d} />
+    </div>
+  );
 }
-createRoot(document.getElementById('root')!).render(<App/>);
+
+createRoot(document.getElementById('root')!).render(<App />);
