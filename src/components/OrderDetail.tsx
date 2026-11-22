@@ -100,7 +100,7 @@ export function OrderDetail({
             <div className="kpi-sub">{o.lines.length} PO lines</div>
           </div>
           <div className="kpi-card">
-            <div className="kpi-label">Units Received</div>
+            <div className="kpi-label">Net Units Received</div>
             <div className="kpi-value">
               {o.received.reduce((s, v) => s + v, 0)}
               <span style={{ fontSize: 13, color: 'var(--cs-text-muted)', fontWeight: 400 }}>
@@ -166,7 +166,7 @@ export function OrderDetail({
           <div>
             <h3 className="card-title">Order Lines</h3>
             <p className="card-subtitle">
-              For every PO line: approved + reserved ≤ received ≤ ordered.
+              For every PO line: approved + reserved ≤ net received ≤ ordered.
               Buyer-declared receipts are not independently proven physical events.
             </p>
           </div>

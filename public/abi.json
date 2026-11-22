@@ -76,6 +76,34 @@
       "ret": "string",
       "payable": false
     },
+    "decide_return": {
+      "params": [
+        [
+          "oid",
+          "string"
+        ],
+        [
+          "expected_revision",
+          "int"
+        ],
+        [
+          "reference",
+          "string"
+        ],
+        [
+          "confirm",
+          "bool"
+        ],
+        [
+          "content_hash",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": false,
+      "ret": "string",
+      "payable": false
+    },
     "get_invoice": {
       "params": [
         [
@@ -109,6 +137,34 @@
       "kwparams": {},
       "readonly": true,
       "ret": "string"
+    },
+    "propose_return": {
+      "params": [
+        [
+          "oid",
+          "string"
+        ],
+        [
+          "expected_revision",
+          "int"
+        ],
+        [
+          "reference",
+          "string"
+        ],
+        [
+          "quantities",
+          "string"
+        ],
+        [
+          "reason",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": false,
+      "ret": "string",
+      "payable": false
     },
     "reconcile": {
       "params": [

@@ -11,13 +11,13 @@ interface EventHistoryProps {
 export function EventHistory({ order }: EventHistoryProps) {
   return (
     <div className="card">
-      <details className="accordion">
+      <details className="accordion" open>
         <summary>
           <History size={14} />
           Signed Event History — {order.events.length} events · Revision {order.revision}
         </summary>
         <div className="accordion-body">
-          {order.events.map(e => (
+          {[...order.events].reverse().map(e => (
             <div key={e.revision} style={{ borderTop: '1px solid var(--cs-border)', padding: '12px 0' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
                 <span className="badge badge-default" style={{ fontSize: 10 }}>#{e.revision}</span>

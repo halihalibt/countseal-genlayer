@@ -20,6 +20,8 @@ import { TransactionCenter } from './components/TransactionCenter';
 import { Footer } from './components/Footer';
 import { AlertTriangle, AlertCircle, Loader, X, Info } from 'lucide-react';
 import './style.css';
+import './manifest.css';
+import {CapacityBoard, Returns} from './components/Returns';
 
 const pending = (t: TxEntry) => !['FINALIZED', 'UNDETERMINED', 'CANCELED'].includes(t.status);
 
@@ -50,6 +52,7 @@ function App() {
   const [lastRead, setLastRead] = useState('');
 
   /* ---- UI ---- */
+  const [dossier, setDossier] = useState<'order' | 'invoices' | 'history'>('order');
   const [tab, setTab] = useState<TabId>('orders');
 
   /* ---- Transactions ---- */
@@ -87,6 +90,12 @@ function App() {
         const second = await read<Order>(config, 'get_order', [pick]);
         if (second.revision !== order.revision)
           throw Error('Order changed during read. Refresh to obtain a coherent snapshot.');
+        if (config.protocol === 'countseal-2' && (!order.returns || !order.returned))
+          throw Error('Missing finalized return ledger');
+        for (const record of Object.values(order.returns ?? {})) {
+          const {content_hash, state, ...manifest} = record;
+          if (await hash(canonical(manifest)) !== content_hash) throw Error('Return manifest digest mismatch');
+        }
         auditBundle(order, inv);
         if (await hash(canonical({
           id: order.id, buyer: order.buyer, supplier: order.supplier,
@@ -239,10 +248,9 @@ function App() {
       <div className="app-body">
         {/* Page intro */}
         <div className="page-intro">
-          <h1>Procurement Reconciliation Workspace</h1>
+          <h1>Reconciliation desk</h1>
           <p>
-            Reconcile supplier descriptions against immutable purchase terms.
-            Reserve only received units. Confirm with a buyer signature.
+            Track supplier invoices, received units and return approvals on GenLayer.
           </p>
           <div className="testnet-notice">
             <AlertTriangle size={14} />
@@ -303,18 +311,29 @@ function App() {
         {/* TAB: Purchase orders */}
         {tab === 'orders' && (
           <>
-            <OrderList
+            <div className="manifest-workspace"><aside className="order-rail"><OrderList
               ids={ids}
               selected={selected}
               lastRead={lastRead}
               issue={issue}
               reading={reading}
               onSelect={choose}
-            />
+            /></aside><div className="manifest-content">
 
             {o && (
               <>
-                <OrderDetail
+                <div className="manifest-title"><h1>{o.title}</h1><span>{o.id.split(':').at(-1)}</span></div>
+                <div className="manifest-grid">
+                  <CapacityBoard key={o.id} order={o}/>
+                  {d?.protocol === 'countseal-2' && <Returns key={o.id} order={o} buyer={buyer} seller={seller} blocked={blocked}
+                    onPropose={(ref, counts, reason) => void action('propose_return', [o.id, o.revision, ref, JSON.stringify(counts), reason])}
+                    onDecide={(record, confirm) => void action('decide_return', [o.id, o.revision, record.reference, confirm, record.content_hash])}/>}
+                </div>
+                <nav className="dossier-navigation" aria-label="Order dossier">
+                  {(['order', 'invoices', 'history'] as const).map(key =>
+                    <button key={key} type="button" aria-pressed={dossier === key} onClick={() => setDossier(key)}>{key}</button>)}
+                </nav>
+                {dossier === 'order' && <OrderDetail
                   order={o}
                   invoices={invoices}
                   deployment={d!}
@@ -339,8 +358,9 @@ function App() {
                     a.click();
                     setTimeout(() => URL.revokeObjectURL(url), 500);
                   }}
-                />
+                />}
 
+                {dossier === 'invoices' && <>
                 {/* Invoice submission (supplier only) */}
                 {seller && o.accepted && (
                   <InvoiceForm
@@ -363,10 +383,11 @@ function App() {
                   onWithdraw={invId => void action('withdraw_invoice', [invId, o.revision])}
                 />
 
-                {/* Event history */}
-                <EventHistory order={o} />
+                </>}
+                {dossier === 'history' && <EventHistory order={o} />}
               </>
             )}
+            </div></div>
           </>
         )}
 

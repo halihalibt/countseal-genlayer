@@ -1,0 +1,10 @@
+{
+  "command": "genvm-lint check contracts/count_seal.py --json",
+  "tool_version": "0.11.0",
+  "release_artifacts": "v0.2.16",
+  "declared_runner": "py-genlayer:1jb45aa8ynh2a9c9xn3b7qqh8sm5q93hwfp7jqmwsfhh8jpz09h6",
+  "runner_std_dependency": "py-lib-genlayer-std:11rhn002yfajawsz7fai6mykznbxkxs6l91iskj5cm82c92qhy3v",
+  "source_sha256": "0a4896fef78840b19fe5ca89eb6cef931c2503e74abf5931a0f8af83edc020eb",
+  "exit_code": 0,
+  "result": {"ok":true,"lint":{"ok":true,"passed":3},"validate":{"ok":true,"contract":"CountSeal","methods":13,"view_methods":4,"write_methods":9,"ctor_params":0}}
+}

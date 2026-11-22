@@ -46,7 +46,7 @@ export function OrderList({ ids, selected, lastRead, issue, reading, onSelect }:
               <option value="">Select an order ({ids.length})</option>
               {ids.map(id => (
                 <option key={id} value={id}>
-                  {id}
+                  {id.split(':').at(-1)}
                 </option>
               ))}
             </select>
@@ -103,10 +103,11 @@ export function OrderList({ ids, selected, lastRead, issue, reading, onSelect }:
               const isSelected = selected === id;
               return (
                 <button
-                  key={id}
+                  key={id.split(':').at(-1)}
                   className="wallet-option"
                   onClick={() => onSelect(id)}
                   style={isSelected ? { borderColor: 'var(--cs-teal-500)', background: 'var(--cs-teal-50)' } : {}}
+                  title={id}
                   aria-pressed={isSelected}
                 >
                   <div
@@ -125,7 +126,7 @@ export function OrderList({ ids, selected, lastRead, issue, reading, onSelect }:
                       whiteSpace: 'nowrap'
                     }}
                   >
-                    {id}
+                    {id.split(':').at(-1)}
                   </span>
                   {isSelected && <span className="badge badge-teal">Selected</span>}
                   <ChevronRight size={16} style={{ color: 'var(--cs-text-muted)' }} />

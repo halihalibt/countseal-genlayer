@@ -58,6 +58,38 @@ class Protocol(unittest.TestCase):
         self.tx(0,'decide_invoice',a['id'],self.order()['revision'],True,a['content_hash'])
         for method,args in [('decide_invoice',(True,a['content_hash'])),('withdraw_invoice',())]:
             with self.assertRaisesRegex(Exception,'INVOICE_TERMINAL'):self.tx(0 if method=='decide_invoice' else 1,method,a['id'],self.order()['revision'],*args)
+    def test_return_capacity_is_checked_against_current_allocations(self):
+        self.prepared()
+        original = self.order()
+        self.tx(0, 'propose_return', self.oid, original['revision'], 'damaged-001', '[3]', 'Damaged threads')
+        pending = self.order()
+        self.assertEqual(pending['received'], [6])
+        manifest = pending['returns']['damaged-001']
+        invoice = self.reconcile(self.submit())
+        def decide(actor=1):
+            self.tx(actor, 'decide_return', self.oid, self.order()['revision'], 'damaged-001', True, manifest['content_hash'])
+        with self.assertRaisesRegex(Exception, 'SUPPLIER_ONLY'):
+            decide(2)
+        with self.assertRaisesRegex(Exception, 'RETURN_EXCEEDS_AVAILABLE'):
+            decide()
+        self.tx(1, 'withdraw_invoice', invoice['id'], self.order()['revision'])
+        decide()
+        self.assertEqual(self.order()['received'], [3])
+        self.assertEqual(self.order()['returned'], [3])
+        with self.assertRaisesRegex(Exception, 'RETURN_NOT_PENDING'):
+            decide()
+
+    def test_declined_manifest_does_not_change_quantities(self):
+        self.prepared()
+        self.tx(0, 'propose_return', self.oid, self.order()['revision'], 'damaged-002', '[2]', 'Damaged threads')
+        manifest = self.order()['returns']['damaged-002']
+        with self.assertRaisesRegex(Exception, 'CONTENT_BINDING'):
+            self.tx(1, 'decide_return', self.oid, self.order()['revision'], 'damaged-002', False, 'wrong')
+        self.tx(1, 'decide_return', self.oid, self.order()['revision'], 'damaged-002', False, manifest['content_hash'])
+        self.assertEqual(self.order()['received'], [6])
+        self.assertEqual(self.order()['returned'], [0])
+        self.assertEqual(self.order()['returns']['damaged-002']['state'], 'DECLINED')
+
     def test_price_mismatch_no_partial_reservation(self):
         self.prepared();a=self.reconcile(self.submit(price=126));self.assertEqual(a['state'],'BLOCKED');self.assertEqual(a['allocation'],[0])
         with self.assertRaisesRegex(Exception,'RESERVATION_REQUIRED'):self.tx(0,'decide_invoice',a['id'],self.order()['revision'],True,a['content_hash'])

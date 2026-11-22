@@ -4,7 +4,7 @@ from genlayer import *
 import json
 import hashlib
 from datetime import datetime
-VERSION = "countseal-1"
+VERSION = "countseal-2"
 
 def need(ok, code):
     if not ok: raise Exception(code)
@@ -160,7 +160,7 @@ class CountSeal(gl.Contract):
         need(len(self.order_ids) < 256, "ORDER_LIMIT")
         o = {"id": oid, "title": text(title, 3, 100), "buyer": who(), "supplier": supplier, "currency": currency, "lines": items,
              "accepted": False, "revision": 0, "received": [0] * len(items), "reserved": [0] * len(items), "approved": [0] * len(items),
-             "invoice_ids": [], "receipt_refs": [], "events": [], "created_at": now()}
+             "invoice_ids": [], "receipt_refs": [], "returns": {}, "returned": [0] * len(items), "events": [], "created_at": now()}
         o["terms_hash"] = sha({k: o[k] for k in ("id", "buyer", "supplier", "currency", "lines")})
         self.orders[oid] = pack(o)
         self.order_ids.append(oid)
@@ -193,6 +193,44 @@ class CountSeal(gl.Contract):
         need(sum(counts) > 0, "EMPTY_RECEIPT")
         o["receipt_refs"].append(reference)
         self._save(o, "RECEIVE", {"reference": reference, "quantities": counts})
+        return oid
+
+    @gl.public.write
+    def propose_return(self, oid: str, expected_revision: int, reference: str, quantities: str, reason: str) -> str:
+        o = self._order(oid)
+        self._revision(o, expected_revision)
+        need(who() == o["buyer"], "BUYER_ONLY")
+        need(o["accepted"], "ORDER_NOT_ACCEPTED")
+        slug(reference)
+        need(reference not in o["returns"], "RETURN_EXISTS")
+        need(len(o["returns"]) < 64, "RETURN_LIMIT")
+        counts = decode(quantities)
+        need(type(counts) is list and len(counts) == len(o["lines"]), "RETURN_SHAPE")
+        for i, count in enumerate(counts):
+            integer(count, 0, 1000000)
+            need(count <= o["received"][i], "RETURN_EXCEEDS_RECEIVED")
+        need(sum(counts) > 0, "EMPTY_RETURN")
+        manifest = {"order_id": oid, "reference": reference, "quantities": counts, "reason": text(reason, 3, 160)}
+        o["returns"][reference] = {**manifest, "content_hash": sha(manifest), "state": "PROPOSED"}
+        self._save(o, "PROPOSE_RETURN", reference)
+        return oid
+
+    @gl.public.write
+    def decide_return(self, oid: str, expected_revision: int, reference: str, confirm: bool, content_hash: str) -> str:
+        o = self._order(oid)
+        self._revision(o, expected_revision)
+        need(who() == o["supplier"], "SUPPLIER_ONLY")
+        record = o["returns"].get(reference)
+        need(record is not None and record["state"] == "PROPOSED", "RETURN_NOT_PENDING")
+        need(type(confirm) is bool and record["content_hash"] == content_hash, "CONTENT_BINDING")
+        if confirm:
+            for i, count in enumerate(record["quantities"]):
+                free = o["received"][i] - o["approved"][i] - o["reserved"][i]
+                need(count <= free, "RETURN_EXCEEDS_AVAILABLE")
+                o["received"][i] -= count
+                o["returned"][i] += count
+        record["state"] = "CONFIRMED" if confirm else "DECLINED"
+        self._save(o, "CONFIRM_RETURN" if confirm else "DECLINE_RETURN", reference)
         return oid
 
     @gl.public.write
