@@ -21,3 +21,7 @@ Milestone readiness depends on completed live verification and hosted workflow c
 ## V2 deployment
 
 The [V2 deployment manifest](../public/deployment.json) points to a separate Stable Studionet deployment. The deployment transaction finalized successfully and the live runner read back identical source bytes. Business acceptance is tracked separately.
+
+## Frontend validation
+
+Fifteen mock-host contract tests, five JavaScript tests, TypeScript and the production build passed. A read-only DOM smoke test mounted the production bundle against the live V2 RPC and exercised category focus, item selection and history navigation. Chromium startup was blocked by the execution environment, so the smoke test does not certify layout rendering or browser-wallet signatures.

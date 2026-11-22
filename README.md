@@ -1,6 +1,6 @@
 # CountSeal
 
-The [returns milestone](docs/returns-milestone.md) documents the V2 return workflow, interface and verification commands. The original Studionet deployment and verification records are documented below.
+The [returns milestone](docs/returns-milestone.md) documents the V2 return workflow, interface and verification commands. The original Studionet deployment and verification records are documented below. To reproduce V1 verification and regenerate its metadata, use the [V1 baseline revision](https://github.com/halihalibt/countseal-genlayer/tree/6df74b933fda54b45d807483aa82b7616c178341).
 
 **Every unit accounted for.** A small-team purchase-order reconciliation application on GenLayer Stable Studionet.
 
