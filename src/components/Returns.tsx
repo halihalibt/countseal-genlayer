@@ -4,6 +4,7 @@ import type {Order, ReturnRecord} from '../types';
 
 export function CapacityBoard({order}: {order: Order}) {
   const [selected, setSelected] = useState(0);
+  const [focusedBin, setFocusedBin] = useState<string>();
   const available = order.received[selected] - order.reserved[selected] - order.approved[selected];
   const returned = order.returned?.[selected] ?? 0;
   const bins = [
@@ -14,14 +15,17 @@ export function CapacityBoard({order}: {order: Order}) {
   ];
   return <section className="capacity-board" aria-label="Inventory capacity">
     <header><span><Boxes size={17}/> Inventory capacity</span><span>REV {order.revision}</span></header>
-    <h2>{available.toLocaleString()} <small>available to invoice</small></h2>
+    <h2>{available.toLocaleString()} <small>available to invoice · {order.received[selected].toLocaleString()} net received</small></h2>
     <div className="cargo-scene" aria-hidden="true">
-      {bins.map(bin => <div key={bin.label} className="cargo-slot" style={{'--cargo-color': bin.color} as React.CSSProperties}>
+      {bins.map(bin => <div key={bin.label} className="cargo-slot" data-focused={focusedBin === bin.label} style={{'--cargo-color': bin.color} as React.CSSProperties}>
         {Array.from({length: bin.value === 0 ? 0 : Math.min(5, Math.ceil(bin.value / Math.max(1, Math.ceil(order.lines[selected].quantity / 5))))}, (_, i) =>
           <i key={i} style={{'--layer': i} as React.CSSProperties} />)}
       </div>)}
     </div>
-    <div className="cargo-key">{bins.map(bin => <div key={bin.label}><span>{bin.label}</span><strong style={{color: bin.color}}>{bin.value.toLocaleString()}</strong></div>)}</div>
+    <div className="cargo-key">{bins.map(bin => <button type="button" key={bin.label}
+      aria-pressed={focusedBin === bin.label} onClick={() => setFocusedBin(focusedBin === bin.label ? undefined : bin.label)}>
+      <span>{bin.label}</span><strong style={{color: bin.color}}>{bin.value.toLocaleString()}</strong>
+    </button>)}</div>
     <label className="cargo-line">Inspect order line<select value={selected} onChange={e => setSelected(Number(e.target.value))}>
       {order.lines.map((line, i) => <option key={i} value={i}>{line.description}</option>)}
     </select></label>
@@ -51,7 +55,13 @@ export function Returns({order, buyer, seller, blocked, onPropose, onDecide}: Pr
       return <details key={record.reference}>
         <summary><span>{record.reference}<small>{record.quantities.reduce((sum, value) => sum + value, 0)} units</small></span><strong>{record.state}</strong></summary>
         <p>{record.reason}</p>
-        <ul>{record.quantities.map((value, i) => value > 0 && <li key={i}>{value} × {order.lines[i].description}</li>)}</ul>
+        <ul>{record.quantities.map((value, i) => {
+          if (value === 0) return null;
+          const free = order.received[i] - order.reserved[i] - order.approved[i];
+          return <li key={i}>{value} × {order.lines[i].description}
+            {record.state === 'PROPOSED' && capacity && <small>Available if confirmed: {free} → {free - value}</small>}
+          </li>;
+        })}</ul>
         <code>{record.content_hash}</code>
         {record.state === 'PROPOSED' && !capacity && <p>Current invoice allocations leave insufficient capacity for confirmation.</p>}
         {seller && record.state === 'PROPOSED' && <div className="manifest-actions">

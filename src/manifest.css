@@ -72,3 +72,8 @@
 .order-rail .wallet-option[aria-pressed="true"] .badge {display:none}
 .page-intro h1 {font-size:clamp(1.6rem,3.3vw,3.2rem);line-height:1;letter-spacing:-.065em}
 .page-intro {border-bottom:1px solid #c3b49e;padding-bottom:12px}
+.cargo-key button {min-width:0;border:1px solid transparent;background:none;color:inherit;border-radius:4px;text-align:left;font:inherit;padding:5px 3px;cursor:pointer}
+.cargo-key button[aria-pressed="true"] {border-color:#c4b1cf;background:#ffffff12}
+.cargo-scene:has([data-focused="true"]) .cargo-slot:not([data-focused="true"]) {opacity:.25}
+.cargo-slot[data-focused="true"] i {transform:translateZ(calc(12px + var(--layer) * 18px))}
+.return-manifest li small {display:block;font-family:ui-monospace,monospace}
