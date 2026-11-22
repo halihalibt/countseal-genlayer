@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  ShieldCheck, Wallet, ChevronDown, ExternalLink
+  ShieldCheck, Wallet, ChevronDown, Box
 } from 'lucide-react';
 import { shortenAddress } from '../utils/format';
 import type { Connection } from '../chain';
@@ -16,7 +16,7 @@ export function Header({ sourceVerified, connection, onWalletClick }: HeaderProp
     <header className="app-header">
       <div className="header-inner">
         <div className="header-brand">
-          <div className="header-logo">CS</div>
+          <div className="header-logo"><Box size={22} aria-hidden="true"/></div>
           <div className="header-brand-text">
             <span className="header-brand-name">CountSeal</span>
             <span className="header-brand-tagline">Procurement Reconciliation</span>
@@ -26,7 +26,7 @@ export function Header({ sourceVerified, connection, onWalletClick }: HeaderProp
         <div className="header-meta">
           <div className="header-network-badge">
             <span className={`header-network-dot ${sourceVerified ? '' : 'verifying'}`} />
-            <span>Studionet 61999</span>
+            <span>Studionet <span className="network-id">61999</span></span>
             {sourceVerified && <ShieldCheck size={12} />}
           </div>
 
@@ -37,7 +37,7 @@ export function Header({ sourceVerified, connection, onWalletClick }: HeaderProp
             <Wallet size={14} />
             {connection
               ? shortenAddress(connection.address)
-              : 'Connect Wallet'}
+              : <span><span className="wallet-connect-prefix">Connect </span>Wallet</span>}
             <ChevronDown size={12} />
           </button>
         </div>

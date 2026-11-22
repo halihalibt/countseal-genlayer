@@ -35,7 +35,7 @@ export function OrderList({ ids, selected, lastRead, issue, reading, onSelect }:
           </p>
         </div>
         {ids.length > 0 && (
-          <div style={{ minWidth: 220, maxWidth: 320, width: '100%' }}>
+          <div className="order-switch-select">
             <select
               className="form-select"
               aria-label="Select purchase order"
@@ -98,7 +98,7 @@ export function OrderList({ ids, selected, lastRead, issue, reading, onSelect }:
         )}
 
         {filteredIds.length > 0 && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, maxHeight: 360, overflowY: 'auto' }}>
+          <div className="order-switch-list">
             {filteredIds.map(id => {
               const isSelected = selected === id;
               return (
@@ -122,13 +122,11 @@ export function OrderList({ ids, selected, lastRead, issue, reading, onSelect }:
                       flex: 1,
                       fontSize: 13,
                       overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap'
+                      overflowWrap: 'anywhere'
                     }}
                   >
                     {id.split(':').at(-1)}
                   </span>
-                  {isSelected && <span className="badge badge-teal">Selected</span>}
                   <ChevronRight size={16} style={{ color: 'var(--cs-text-muted)' }} />
                 </button>
               );

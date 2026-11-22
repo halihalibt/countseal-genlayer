@@ -77,3 +77,29 @@
 .cargo-scene:has([data-focused="true"]) .cargo-slot:not([data-focused="true"]) {opacity:.25}
 .cargo-slot[data-focused="true"] i {transform:translateZ(calc(12px + var(--layer) * 18px))}
 .return-manifest li small {display:block;font-family:ui-monospace,monospace}
+.page-intro {max-width:none;display:flex;align-items:center;justify-content:space-between;gap:24px;margin-bottom:8px}
+.page-intro h1 {font-size:clamp(1.55rem,2.7vw,2.7rem);margin-bottom:4px}
+.page-intro p,.page-intro .testnet-notice {margin:0}
+.page-intro .testnet-notice {max-width:370px;background:transparent;border:0;border-left:1px dashed #ac9270;border-radius:0}
+.app-nav {margin-bottom:16px}
+.order-switch-select {display:none}
+.order-switch-list {display:grid;gap:4px;max-height:360px;overflow:auto}
+.order-rail .card {margin-bottom:0}
+.order-rail .wallet-option {padding:8px;gap:8px;line-height:1.25}
+.manifest-title h1 {max-width:90%;font-size:clamp(1.5rem,2.7vw,2.65rem)}
+.return-manifest summary strong {border:0;background:#e8dcbd;padding:3px 6px}
+.return-manifest details:has(.manifest-actions) summary strong {background:#d9d0fc}
+@media(max-width:950px) {
+  .order-switch-select {display:block;width:100%}
+  .order-switch-list {display:none}
+}
+@media(max-width:620px) {
+  .page-intro {display:block}
+  .page-intro .testnet-notice {margin-top:7px;max-width:none;padding:4px 0 4px 8px}
+  .header-inner,.header-meta,.header-brand {gap:7px}
+  .header-meta .btn {padding-inline:8px}
+  .header-network-badge {padding-inline:5px}
+  .header-network-badge .network-id,.wallet-connect-prefix,.header-meta .btn svg:last-child {display:none}
+  .app-nav .nav-tab {padding-inline:6px;gap:4px;font-size:11px}
+  .app-nav .nav-actions .btn {font-size:0;gap:0;padding-inline:7px}
+}

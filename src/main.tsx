@@ -248,16 +248,10 @@ function App() {
       <div className="app-body">
         {/* Page intro */}
         <div className="page-intro">
-          <h1>Reconciliation desk</h1>
-          <p>
-            Track supplier invoices, received units and return approvals on GenLayer.
-          </p>
+          <div><h1>Reconciliation desk</h1><p>Purchase orders, invoices and returns</p></div>
           <div className="testnet-notice">
             <AlertTriangle size={14} />
-            <span>
-              Public testnet records only. Do not enter personal, confidential or commercial invoice data.
-              Approval records reconciliation; it does not pay an invoice or prove a physical delivery.
-            </span>
+            <span>Use sample data on this public testnet. Invoices and deliveries are records only.</span>
           </div>
         </div>
 
