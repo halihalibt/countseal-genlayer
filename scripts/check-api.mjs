@@ -6,5 +6,5 @@ try{await new Promise((resolve,reject)=>{const timeout=setTimeout(()=>reject(Err
   const r=await fetch(base+path,{method,signal:AbortSignal.timeout(120000)});const body=await r.text();if(r.status!==status)throw Error(method+' '+path+': '+r.status+' '+body);if(path.includes('/api/orders/')&&!path.endsWith('.csv')){const data=JSON.parse(body);if(data.state_variant!=='latest-final'||data.contract.toLowerCase()!==d.contract.toLowerCase())throw Error('API binding failed');}
   results.push({path,method,status:r.status,bytes:body.length});console.log(method,r.status,path);
  }
- fs.writeFileSync('evidence/api.json',JSON.stringify({checked_at:new Date().toISOString(),contract:d.contract,checks:results},null,2));
+ fs.writeFileSync(d.protocol==='countseal-2'?'evidence/returns-api.json':'evidence/api.json',JSON.stringify({checked_at:new Date().toISOString(),contract:d.contract,checks:results},null,2));
 }finally{child.kill();}

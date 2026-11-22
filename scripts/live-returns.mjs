@@ -1,7 +1,7 @@
 import fs from 'node:fs';import crypto from 'node:crypto';
 import {createClient} from 'genlayer-js';import {studionet} from 'genlayer-js/chains';import {generatePrivateKey,privateKeyToAccount} from 'viem/accounts';
 import {compactReceipt} from './compact-receipts.mjs';
-import {rpc,stringify} from './network.mjs';import {executionOf} from '../src/receipt.mjs';
+import {RPC,rpc,stringify} from './network.mjs';import {executionOf} from '../src/receipt.mjs';
 fs.mkdirSync('artifacts',{recursive:true});fs.mkdirSync('evidence',{recursive:true});
 const file='evidence/returns-live.json',keyfile='artifacts/returns-signers.json';
 const source=fs.readFileSync('contracts/count_seal.py','utf8'),digest=crypto.createHash('sha256').update(source).digest('hex');

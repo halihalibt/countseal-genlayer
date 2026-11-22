@@ -1,0 +1,42 @@
+{
+  "checked_at": "2026-11-22T16:39:20.606Z",
+  "contract": "0xeCaffC3A3e34E6010b3A32BE8b819A68590E74cd",
+  "checks": [
+    {
+      "path": "/api/health",
+      "method": "GET",
+      "status": 200,
+      "bytes": 125
+    },
+    {
+      "path": "/api/read",
+      "method": "POST",
+      "status": 405,
+      "bytes": 58
+    },
+    {
+      "path": "/api/read?method=decide_invoice",
+      "method": "GET",
+      "status": 400,
+      "bytes": 48
+    },
+    {
+      "path": "/api/read?method=get_protocol",
+      "method": "GET",
+      "status": 200,
+      "bytes": 266
+    },
+    {
+      "path": "/api/orders/0x0affc7fc150cbd218990363bf1b421a09ab61629%3Aworkshop-return",
+      "method": "GET",
+      "status": 200,
+      "bytes": 5084
+    },
+    {
+      "path": "/api/orders/0x0affc7fc150cbd218990363bf1b421a09ab61629%3Aworkshop-return/approved.csv",
+      "method": "GET",
+      "status": 200,
+      "bytes": 93
+    }
+  ]
+}

@@ -1,0 +1,891 @@
+{
+  "verified_at": "2026-11-22T16:45:32.817Z",
+  "chain_id": 61999,
+  "contract": "0xeCaffC3A3e34E6010b3A32BE8b819A68590E74cd",
+  "source_sha256": "0a4896fef78840b19fe5ca89eb6cef931c2503e74abf5931a0f8af83edc020eb",
+  "transactions": [
+    {
+      "label": "deploy",
+      "hash": "0x1b264534acdf788be2fa1ac36275c02e61c919eafdfc26042db2c98f120c3d67",
+      "status": "FINALIZED",
+      "execution": "SUCCESS",
+      "expected_failure": false,
+      "leader_only": false,
+      "votes": {
+        "0x19a02f95418A6c76091CDA37C4fc542CA82805c9": "idle",
+        "0x21e4F7ba6Ec0fbf70C019fbc0F9A797c3ed1F969": "agree",
+        "0x22Eda431B7fBC1216baE3b077a78c973a8719c58": "agree",
+        "0x6fe9DE3d0adc76D6416A13CD8107aaE49A3CF98F": "idle",
+        "0x813890bC5bEDEB4F5437570962379F04738F18Cb": "agree"
+      }
+    },
+    {
+      "label": "workshop-return-create",
+      "hash": "0xffaea5b6f78a3409be2fc4a5881fe060f6811599007b48522579d6f23191339f",
+      "status": "FINALIZED",
+      "execution": "SUCCESS",
+      "expected_failure": false,
+      "leader_only": false,
+      "votes": {
+        "0x19a02f95418A6c76091CDA37C4fc542CA82805c9": "agree",
+        "0x22Eda431B7fBC1216baE3b077a78c973a8719c58": "agree",
+        "0x4eeaD269a60bB89c98a23c1BCd0bd101CafD90E0": "idle",
+        "0x534af64FFB6796Bc69aBf4C26c50788F1fFAfe56": "idle",
+        "0x5e880d85a70De78dDEf86236d57c42e73F560615": "agree"
+      }
+    },
+    {
+      "label": "workshop-return-accept",
+      "hash": "0x6cb82f204e1a06c45a234a412637380be80f0bdc23184da2c0e34a9c3f9f44c5",
+      "status": "FINALIZED",
+      "execution": "SUCCESS",
+      "expected_failure": false,
+      "leader_only": false,
+      "votes": {
+        "0x23A15A452F19D1B616276fedC5B8B51d69082959": "agree",
+        "0x6DC61b906F74F44612c5545b0b79486133B3556d": "idle",
+        "0x813890bC5bEDEB4F5437570962379F04738F18Cb": "idle",
+        "0xBE58b43DF1d991e054F743Cc5571dD7029F3B888": "agree",
+        "0xee46B9Dc4c860149B1d140840284e5374854e746": "agree"
+      }
+    },
+    {
+      "label": "workshop-return-receive",
+      "hash": "0x1ee0fe3b47e5ce746658aee97355d5c3add84b44c71097745a80c5f63600a323",
+      "status": "FINALIZED",
+      "execution": "SUCCESS",
+      "expected_failure": false,
+      "leader_only": false,
+      "votes": {
+        "0x21e4F7ba6Ec0fbf70C019fbc0F9A797c3ed1F969": "agree",
+        "0x62718FbDf0509A398aA525C152D60c1F7A9d33D3": "agree",
+        "0x725Ab89db6A9DD886Ba71Bc5E63a01070C325bE3": "agree",
+        "0x88E148Da14d45c5a5DD2DB25E776eBCBCe0Df539": "agree",
+        "0xe358f855C96d8E7243836cf986eb037175B9467e": "agree"
+      }
+    },
+    {
+      "label": "damaged-bolts-propose",
+      "hash": "0xe77b9b8295dfa92190967c2fcce6b72f08aeadbf696560a262d39545ee584142",
+      "status": "FINALIZED",
+      "execution": "SUCCESS",
+      "expected_failure": false,
+      "leader_only": false,
+      "votes": {
+        "0x22Eda431B7fBC1216baE3b077a78c973a8719c58": "agree",
+        "0x534af64FFB6796Bc69aBf4C26c50788F1fFAfe56": "agree",
+        "0x5744305308D62592B7De585e1999c4Ea51E03C29": "agree",
+        "0x6fe9DE3d0adc76D6416A13CD8107aaE49A3CF98F": "idle",
+        "0x813890bC5bEDEB4F5437570962379F04738F18Cb": "idle"
+      }
+    },
+    {
+      "label": "damaged-bolts-outsider",
+      "hash": "0x0db18d825d20ebe695243c4a18ae3cfdb09cd3a0a91832b2e91cdb2ff9f47cd0",
+      "status": "FINALIZED",
+      "execution": "ERROR",
+      "expected_failure": true,
+      "expected_error": "SUPPLIER_ONLY",
+      "leader_only": false,
+      "votes": {
+        "0x19a02f95418A6c76091CDA37C4fc542CA82805c9": "agree",
+        "0x1B490819e040562a5fb40CD64B1c70D4419c38d1": "agree",
+        "0x6DC61b906F74F44612c5545b0b79486133B3556d": "idle",
+        "0x6fe9DE3d0adc76D6416A13CD8107aaE49A3CF98F": "idle",
+        "0xee46B9Dc4c860149B1d140840284e5374854e746": "agree"
+      }
+    },
+    {
+      "label": "damaged-bolts-wrong-digest",
+      "hash": "0xb76c38f02b18ee47adc39c1758cd7a24250655a9d885e88515dad73649289f08",
+      "status": "FINALIZED",
+      "execution": "ERROR",
+      "expected_failure": true,
+      "expected_error": "CONTENT_BINDING",
+      "leader_only": false,
+      "votes": {
+        "0x19a02f95418A6c76091CDA37C4fc542CA82805c9": "idle",
+        "0x21e4F7ba6Ec0fbf70C019fbc0F9A797c3ed1F969": "agree",
+        "0x4eeaD269a60bB89c98a23c1BCd0bd101CafD90E0": "agree",
+        "0x5e880d85a70De78dDEf86236d57c42e73F560615": "agree",
+        "0x6fe9DE3d0adc76D6416A13CD8107aaE49A3CF98F": "agree"
+      }
+    },
+    {
+      "label": "damaged-bolts-decide",
+      "hash": "0xb664977ec12c9de927387a6dac0c043962da9139f68102324cb63ce6acc01965",
+      "status": "FINALIZED",
+      "execution": "SUCCESS",
+      "expected_failure": false,
+      "leader_only": false,
+      "votes": {
+        "0x21e4F7ba6Ec0fbf70C019fbc0F9A797c3ed1F969": "agree",
+        "0x22Eda431B7fBC1216baE3b077a78c973a8719c58": "agree",
+        "0x534af64FFB6796Bc69aBf4C26c50788F1fFAfe56": "idle",
+        "0x62718FbDf0509A398aA525C152D60c1F7A9d33D3": "idle",
+        "0xE74a9088aD4d6dBf3C8cABcC0B91072d2a8c8afa": "agree"
+      }
+    },
+    {
+      "label": "damaged-bolts-replay",
+      "hash": "0x942da0b4ab042040bb8178276e082becfbb860852977d43abad6c89a2fab0524",
+      "status": "FINALIZED",
+      "execution": "ERROR",
+      "expected_failure": true,
+      "expected_error": "RETURN_NOT_PENDING",
+      "leader_only": false,
+      "votes": {
+        "0x22Eda431B7fBC1216baE3b077a78c973a8719c58": "agree",
+        "0x240d2d7c8DF220110c26cfFFC532479319Cca0dC": "idle",
+        "0x5744305308D62592B7De585e1999c4Ea51E03C29": "agree",
+        "0xE74a9088aD4d6dBf3C8cABcC0B91072d2a8c8afa": "agree",
+        "0xe358f855C96d8E7243836cf986eb037175B9467e": "idle"
+      }
+    },
+    {
+      "label": "invoice-three-submit",
+      "hash": "0xe8894bb67f88b89738e10a1f2e9dfeb0a7e34c53367ef00b3f6930ef3676dae1",
+      "status": "FINALIZED",
+      "execution": "SUCCESS",
+      "expected_failure": false,
+      "leader_only": false,
+      "votes": {
+        "0x23A15A452F19D1B616276fedC5B8B51d69082959": "idle",
+        "0x534af64FFB6796Bc69aBf4C26c50788F1fFAfe56": "agree",
+        "0x5e880d85a70De78dDEf86236d57c42e73F560615": "agree",
+        "0xe358f855C96d8E7243836cf986eb037175B9467e": "idle",
+        "0xee46B9Dc4c860149B1d140840284e5374854e746": "agree"
+      }
+    },
+    {
+      "label": "invoice-three-reconcile",
+      "hash": "0x955f4bf4d52f473f820e178f5a0fad155172f11d60781c0a44c02860c3a5d49e",
+      "status": "FINALIZED",
+      "execution": "SUCCESS",
+      "expected_failure": false,
+      "leader_only": false,
+      "votes": {
+        "0x19a02f95418A6c76091CDA37C4fc542CA82805c9": "idle",
+        "0x23A15A452F19D1B616276fedC5B8B51d69082959": "agree",
+        "0x6DC61b906F74F44612c5545b0b79486133B3556d": "idle",
+        "0x6fe9DE3d0adc76D6416A13CD8107aaE49A3CF98F": "agree",
+        "0xBE58b43DF1d991e054F743Cc5571dD7029F3B888": "agree"
+      }
+    },
+    {
+      "label": "invoice-two-submit",
+      "hash": "0x86568f24d53cfcbb5b528efcd36c2b9dc16298991dc92799f7cbda7a68b64094",
+      "status": "FINALIZED",
+      "execution": "SUCCESS",
+      "expected_failure": false,
+      "leader_only": false,
+      "votes": {
+        "0x22Eda431B7fBC1216baE3b077a78c973a8719c58": "idle",
+        "0x23A15A452F19D1B616276fedC5B8B51d69082959": "idle",
+        "0x6fe9DE3d0adc76D6416A13CD8107aaE49A3CF98F": "agree",
+        "0x725Ab89db6A9DD886Ba71Bc5E63a01070C325bE3": "agree",
+        "0xee46B9Dc4c860149B1d140840284e5374854e746": "agree"
+      }
+    },
+    {
+      "label": "invoice-two-reconcile",
+      "hash": "0x00050948b27aca772c5c64632b0cf2540b1234eacb5f84900b38c277dbc36dcc",
+      "status": "FINALIZED",
+      "execution": "SUCCESS",
+      "expected_failure": false,
+      "leader_only": false,
+      "votes": {
+        "0x21e4F7ba6Ec0fbf70C019fbc0F9A797c3ed1F969": "idle",
+        "0x534af64FFB6796Bc69aBf4C26c50788F1fFAfe56": "agree",
+        "0x6fe9DE3d0adc76D6416A13CD8107aaE49A3CF98F": "agree",
+        "0x725Ab89db6A9DD886Ba71Bc5E63a01070C325bE3": "idle",
+        "0x813890bC5bEDEB4F5437570962379F04738F18Cb": "agree"
+      }
+    },
+    {
+      "label": "reserved-conflict-propose",
+      "hash": "0x795b36c170ed2dea7a9c859f1d59398b3b4c908701cf37cc1b7b68a4b709f0c6",
+      "status": "FINALIZED",
+      "execution": "SUCCESS",
+      "expected_failure": false,
+      "leader_only": false,
+      "votes": {
+        "0x23A15A452F19D1B616276fedC5B8B51d69082959": "idle",
+        "0x4eeaD269a60bB89c98a23c1BCd0bd101CafD90E0": "agree",
+        "0x62718FbDf0509A398aA525C152D60c1F7A9d33D3": "idle",
+        "0x88E148Da14d45c5a5DD2DB25E776eBCBCe0Df539": "agree",
+        "0xe358f855C96d8E7243836cf986eb037175B9467e": "agree"
+      }
+    },
+    {
+      "label": "reserved-conflict-capacity",
+      "hash": "0x71691e27d6f0608973cf3095ae8a355a59446407869a26b747fa1cc70c2e8622",
+      "status": "FINALIZED",
+      "execution": "ERROR",
+      "expected_failure": true,
+      "expected_error": "RETURN_EXCEEDS_AVAILABLE",
+      "leader_only": false,
+      "votes": {
+        "0x21e4F7ba6Ec0fbf70C019fbc0F9A797c3ed1F969": "agree",
+        "0x6DC61b906F74F44612c5545b0b79486133B3556d": "agree",
+        "0x6fe9DE3d0adc76D6416A13CD8107aaE49A3CF98F": "idle",
+        "0xBE58b43DF1d991e054F743Cc5571dD7029F3B888": "idle",
+        "0xee46B9Dc4c860149B1d140840284e5374854e746": "agree"
+      }
+    },
+    {
+      "label": "facility-return-create",
+      "hash": "0xe216950efb4809b33f59e7ba66ffd3391476ae8fbc5db2232882f2bc50ba8ef8",
+      "status": "FINALIZED",
+      "execution": "SUCCESS",
+      "expected_failure": false,
+      "leader_only": false,
+      "votes": {
+        "0x19a02f95418A6c76091CDA37C4fc542CA82805c9": "agree",
+        "0x23A15A452F19D1B616276fedC5B8B51d69082959": "agree",
+        "0x6DC61b906F74F44612c5545b0b79486133B3556d": "agree",
+        "0x725Ab89db6A9DD886Ba71Bc5E63a01070C325bE3": "agree",
+        "0xee46B9Dc4c860149B1d140840284e5374854e746": "agree"
+      }
+    },
+    {
+      "label": "facility-return-accept",
+      "hash": "0x1a2181b3df20d3ec7b157615bf3c0b17f769c0f0d904f2b41402d9553635f3c4",
+      "status": "FINALIZED",
+      "execution": "SUCCESS",
+      "expected_failure": false,
+      "leader_only": false,
+      "votes": {
+        "0x22Eda431B7fBC1216baE3b077a78c973a8719c58": "agree",
+        "0x23A15A452F19D1B616276fedC5B8B51d69082959": "agree",
+        "0x534af64FFB6796Bc69aBf4C26c50788F1fFAfe56": "agree",
+        "0x6DC61b906F74F44612c5545b0b79486133B3556d": "idle",
+        "0x813890bC5bEDEB4F5437570962379F04738F18Cb": "idle"
+      }
+    },
+    {
+      "label": "facility-return-receive",
+      "hash": "0xdd4a61b3c87be596329446bdef2543b7e6668ff1f591ac26b7e6535499ee5b1f",
+      "status": "FINALIZED",
+      "execution": "SUCCESS",
+      "expected_failure": false,
+      "leader_only": false,
+      "votes": {
+        "0x6DC61b906F74F44612c5545b0b79486133B3556d": "agree",
+        "0x813890bC5bEDEB4F5437570962379F04738F18Cb": "idle",
+        "0xBE58b43DF1d991e054F743Cc5571dD7029F3B888": "agree",
+        "0xE74a9088aD4d6dBf3C8cABcC0B91072d2a8c8afa": "agree",
+        "0xee46B9Dc4c860149B1d140840284e5374854e746": "idle"
+      }
+    },
+    {
+      "label": "incorrect-damage-claim-propose",
+      "hash": "0x00a630111624d8f84db81196c82cb826165a54e0dc55cb1ff1a70c7d134ca97f",
+      "status": "FINALIZED",
+      "execution": "SUCCESS",
+      "expected_failure": false,
+      "leader_only": false,
+      "votes": {
+        "0x21e4F7ba6Ec0fbf70C019fbc0F9A797c3ed1F969": "agree",
+        "0x240d2d7c8DF220110c26cfFFC532479319Cca0dC": "agree",
+        "0x813890bC5bEDEB4F5437570962379F04738F18Cb": "agree",
+        "0x88E148Da14d45c5a5DD2DB25E776eBCBCe0Df539": "agree",
+        "0xBE58b43DF1d991e054F743Cc5571dD7029F3B888": "agree"
+      }
+    },
+    {
+      "label": "incorrect-damage-claim-decide",
+      "hash": "0x5f502dad72ec2af4edb66a8cb32a66546f25a68b1bc163fd1b81be077cac3cd4",
+      "status": "FINALIZED",
+      "execution": "SUCCESS",
+      "expected_failure": false,
+      "leader_only": false,
+      "votes": {
+        "0x23A15A452F19D1B616276fedC5B8B51d69082959": "agree",
+        "0x6DC61b906F74F44612c5545b0b79486133B3556d": "agree",
+        "0x88E148Da14d45c5a5DD2DB25E776eBCBCe0Df539": "idle",
+        "0xe358f855C96d8E7243836cf986eb037175B9467e": "agree",
+        "0xee46B9Dc4c860149B1d140840284e5374854e746": "agree"
+      }
+    },
+    {
+      "label": "depot-return-create",
+      "hash": "0xf2b2773c862ef14aacf99026d68ee56faab2142224e04453b7c2706429190938",
+      "status": "FINALIZED",
+      "execution": "SUCCESS",
+      "expected_failure": false,
+      "leader_only": false,
+      "votes": {
+        "0x21e4F7ba6Ec0fbf70C019fbc0F9A797c3ed1F969": "agree",
+        "0x534af64FFB6796Bc69aBf4C26c50788F1fFAfe56": "idle",
+        "0x5744305308D62592B7De585e1999c4Ea51E03C29": "idle",
+        "0x6fe9DE3d0adc76D6416A13CD8107aaE49A3CF98F": "agree",
+        "0xBE58b43DF1d991e054F743Cc5571dD7029F3B888": "agree"
+      }
+    },
+    {
+      "label": "depot-return-accept",
+      "hash": "0x9f73856741a136c659c5ddf46b6bb6c5a8d912b30fc065bff2fb30f7dda6f497",
+      "status": "FINALIZED",
+      "execution": "SUCCESS",
+      "expected_failure": false,
+      "leader_only": false,
+      "votes": {
+        "0x22Eda431B7fBC1216baE3b077a78c973a8719c58": "agree",
+        "0x4eeaD269a60bB89c98a23c1BCd0bd101CafD90E0": "idle",
+        "0x5e880d85a70De78dDEf86236d57c42e73F560615": "idle",
+        "0x6fe9DE3d0adc76D6416A13CD8107aaE49A3CF98F": "agree",
+        "0x725Ab89db6A9DD886Ba71Bc5E63a01070C325bE3": "agree"
+      }
+    },
+    {
+      "label": "depot-return-receive",
+      "hash": "0x2734f46c7e633eda0c608f09568edffac6c6f785a0ac711111506c2910608d86",
+      "status": "FINALIZED",
+      "execution": "SUCCESS",
+      "expected_failure": false,
+      "leader_only": false,
+      "votes": {
+        "0x21e4F7ba6Ec0fbf70C019fbc0F9A797c3ed1F969": "idle",
+        "0x22Eda431B7fBC1216baE3b077a78c973a8719c58": "agree",
+        "0x5e880d85a70De78dDEf86236d57c42e73F560615": "agree",
+        "0x6DC61b906F74F44612c5545b0b79486133B3556d": "agree",
+        "0xe358f855C96d8E7243836cf986eb037175B9467e": "idle"
+      }
+    },
+    {
+      "label": "mixed-return-propose",
+      "hash": "0x43d62ce44998612632b8de380379da9e3903415fcf0f9d16f88991dd12e2c52b",
+      "status": "FINALIZED",
+      "execution": "SUCCESS",
+      "expected_failure": false,
+      "leader_only": false,
+      "votes": {
+        "0x240d2d7c8DF220110c26cfFFC532479319Cca0dC": "idle",
+        "0x4eeaD269a60bB89c98a23c1BCd0bd101CafD90E0": "agree",
+        "0x534af64FFB6796Bc69aBf4C26c50788F1fFAfe56": "agree",
+        "0x5e880d85a70De78dDEf86236d57c42e73F560615": "idle",
+        "0xBE58b43DF1d991e054F743Cc5571dD7029F3B888": "agree"
+      }
+    },
+    {
+      "label": "mixed-return-decide",
+      "hash": "0x57e65b9000391187f4e1aeae9be124d0976e93e2f403c021ddba0a4150b3ab27",
+      "status": "FINALIZED",
+      "execution": "SUCCESS",
+      "expected_failure": false,
+      "leader_only": false,
+      "votes": {
+        "0x1B490819e040562a5fb40CD64B1c70D4419c38d1": "idle",
+        "0x240d2d7c8DF220110c26cfFFC532479319Cca0dC": "idle",
+        "0x4eeaD269a60bB89c98a23c1BCd0bd101CafD90E0": "agree",
+        "0x534af64FFB6796Bc69aBf4C26c50788F1fFAfe56": "agree",
+        "0x62718FbDf0509A398aA525C152D60c1F7A9d33D3": "agree"
+      }
+    },
+    {
+      "label": "washer-return-propose",
+      "hash": "0xd5b65390923f8f6cac17cbce9c22d691e5ceb0b56de6a19617f4c104cac6058a",
+      "status": "FINALIZED",
+      "execution": "SUCCESS",
+      "expected_failure": false,
+      "leader_only": false,
+      "votes": {
+        "0x22Eda431B7fBC1216baE3b077a78c973a8719c58": "idle",
+        "0x23A15A452F19D1B616276fedC5B8B51d69082959": "agree",
+        "0x4eeaD269a60bB89c98a23c1BCd0bd101CafD90E0": "agree",
+        "0x62718FbDf0509A398aA525C152D60c1F7A9d33D3": "idle",
+        "0x6DC61b906F74F44612c5545b0b79486133B3556d": "agree"
+      }
+    },
+    {
+      "label": "washer-return-decide",
+      "hash": "0xaa15df9768bb993e0fe06d39ca230db89b1f9f493c61ee6edf499e1615b7dbc5",
+      "status": "FINALIZED",
+      "execution": "SUCCESS",
+      "expected_failure": false,
+      "leader_only": false,
+      "votes": {
+        "0x1B490819e040562a5fb40CD64B1c70D4419c38d1": "agree",
+        "0x4eeaD269a60bB89c98a23c1BCd0bd101CafD90E0": "idle",
+        "0x6DC61b906F74F44612c5545b0b79486133B3556d": "agree",
+        "0x88E148Da14d45c5a5DD2DB25E776eBCBCe0Df539": "agree",
+        "0xBE58b43DF1d991e054F743Cc5571dD7029F3B888": "idle"
+      }
+    },
+    {
+      "label": "pending-inspection-propose",
+      "hash": "0x13e8a92dc542d44d235147f89a0623cf66845edd21f32c377474fe4970e2e58b",
+      "status": "FINALIZED",
+      "execution": "SUCCESS",
+      "expected_failure": false,
+      "leader_only": false,
+      "votes": {
+        "0x22Eda431B7fBC1216baE3b077a78c973a8719c58": "idle",
+        "0x23A15A452F19D1B616276fedC5B8B51d69082959": "agree",
+        "0x240d2d7c8DF220110c26cfFFC532479319Cca0dC": "agree",
+        "0x5e880d85a70De78dDEf86236d57c42e73F560615": "agree",
+        "0xE74a9088aD4d6dBf3C8cABcC0B91072d2a8c8afa": "agree"
+      }
+    }
+  ],
+  "state_variant": "latest-final",
+  "readbacks": {
+    "workshop-final": {
+      "order": {
+        "accepted": true,
+        "approved": [
+          0,
+          0
+        ],
+        "buyer": "0x0affc7fc150cbd218990363bf1b421a09ab61629",
+        "created_at": 1795364621,
+        "currency": "USD",
+        "events": [
+          {
+            "action": "ACCEPT_ORDER",
+            "actor": "0x249543c98244012ca822561ea35ed5e891a399e8",
+            "at": 1795364672,
+            "revision": 1,
+            "subject": "0x0affc7fc150cbd218990363bf1b421a09ab61629:workshop-return"
+          },
+          {
+            "action": "RECEIVE",
+            "actor": "0x0affc7fc150cbd218990363bf1b421a09ab61629",
+            "at": 1795364709,
+            "revision": 2,
+            "subject": {
+              "quantities": [
+                4,
+                10
+              ],
+              "reference": "delivery-one"
+            }
+          },
+          {
+            "action": "PROPOSE_RETURN",
+            "actor": "0x0affc7fc150cbd218990363bf1b421a09ab61629",
+            "at": 1795364755,
+            "revision": 3,
+            "subject": "damaged-bolts"
+          },
+          {
+            "action": "CONFIRM_RETURN",
+            "actor": "0x249543c98244012ca822561ea35ed5e891a399e8",
+            "at": 1795364893,
+            "revision": 4,
+            "subject": "damaged-bolts"
+          },
+          {
+            "action": "SUBMIT_INVOICE",
+            "actor": "0x249543c98244012ca822561ea35ed5e891a399e8",
+            "at": 1795364980,
+            "revision": 5,
+            "subject": "0x0affc7fc150cbd218990363bf1b421a09ab61629:workshop-return:invoice-three"
+          },
+          {
+            "action": "RECONCILE",
+            "actor": "0x249543c98244012ca822561ea35ed5e891a399e8",
+            "at": 1795365021,
+            "revision": 6,
+            "subject": "0x0affc7fc150cbd218990363bf1b421a09ab61629:workshop-return:invoice-three"
+          },
+          {
+            "action": "SUBMIT_INVOICE",
+            "actor": "0x249543c98244012ca822561ea35ed5e891a399e8",
+            "at": 1795365074,
+            "revision": 7,
+            "subject": "0x0affc7fc150cbd218990363bf1b421a09ab61629:workshop-return:invoice-two"
+          },
+          {
+            "action": "RECONCILE",
+            "actor": "0x249543c98244012ca822561ea35ed5e891a399e8",
+            "at": 1795365109,
+            "revision": 8,
+            "subject": "0x0affc7fc150cbd218990363bf1b421a09ab61629:workshop-return:invoice-two"
+          },
+          {
+            "action": "PROPOSE_RETURN",
+            "actor": "0x0affc7fc150cbd218990363bf1b421a09ab61629",
+            "at": 1795365163,
+            "revision": 9,
+            "subject": "reserved-conflict"
+          }
+        ],
+        "id": "0x0affc7fc150cbd218990363bf1b421a09ab61629:workshop-return",
+        "invoice_ids": [
+          "0x0affc7fc150cbd218990363bf1b421a09ab61629:workshop-return:invoice-three",
+          "0x0affc7fc150cbd218990363bf1b421a09ab61629:workshop-return:invoice-two"
+        ],
+        "lines": [
+          {
+            "description": "Steel hex-head bolt M8 x 30 mm, sold as one individual bolt.",
+            "quantity": 12,
+            "unit_price": 125
+          },
+          {
+            "description": "Steel flat washer for M8 bolts, sold as one individual washer.",
+            "quantity": 20,
+            "unit_price": 25
+          }
+        ],
+        "receipt_refs": [
+          "delivery-one"
+        ],
+        "received": [
+          2,
+          10
+        ],
+        "reserved": [
+          2,
+          0
+        ],
+        "returned": [
+          2,
+          0
+        ],
+        "returns": {
+          "damaged-bolts": {
+            "content_hash": "3c6e966cdaade33b512bb7796f396fa1705cab939677ba877ac85f1d2a3c55ea",
+            "order_id": "0x0affc7fc150cbd218990363bf1b421a09ab61629:workshop-return",
+            "quantities": [
+              2,
+              0
+            ],
+            "reason": "Two bolts have damaged threads.",
+            "reference": "damaged-bolts",
+            "state": "CONFIRMED"
+          },
+          "reserved-conflict": {
+            "content_hash": "d3116425941a9ddc9d32d03948eb44fb23a9d3b54e7c82a87960d903974254d2",
+            "order_id": "0x0affc7fc150cbd218990363bf1b421a09ab61629:workshop-return",
+            "quantities": [
+              1,
+              0
+            ],
+            "reason": "Requested after the invoice reserved remaining units.",
+            "reference": "reserved-conflict",
+            "state": "PROPOSED"
+          }
+        },
+        "revision": 9,
+        "supplier": "0x249543c98244012ca822561ea35ed5e891a399e8",
+        "terms_hash": "13da44e1ad64564188e04be0b2887a00859481284190e8e5696557633f146379",
+        "title": "Workshop fasteners · damaged shipment"
+      },
+      "invoices": [
+        {
+          "allocation": [
+            0,
+            0
+          ],
+          "basis_hash": "8cf47d2843dc86f85bfb51103ffe5dd3464a40fcc3ee5a919767df3a6380917d",
+          "basis_revision": 5,
+          "content_hash": "a2a03112ae34ee449b253a96001efe3e5dcfcd600ba8b6ceb6d598e6a77ca545",
+          "created_at": 1795364980,
+          "id": "0x0affc7fc150cbd218990363bf1b421a09ab61629:workshop-return:invoice-three",
+          "lines": [
+            {
+              "description": "Steel hex-head bolt M8 x 30 mm, sold as one individual bolt.",
+              "quantity": 3,
+              "unit_price": 125
+            }
+          ],
+          "mapping": {
+            "rows": [
+              {
+                "invoice_quote": "Steel hex-head bolt M8 x 30 mm, sold as one individual bolt.",
+                "order_quote": "Steel hex-head bolt M8 x 30 mm, sold as one individual bolt.",
+                "status": "MATCH",
+                "target": 0
+              }
+            ]
+          },
+          "order_id": "0x0affc7fc150cbd218990363bf1b421a09ab61629:workshop-return",
+          "reasons": [
+            {
+              "available": 2,
+              "code": "INSUFFICIENT_RECEIVED",
+              "line": 0
+            }
+          ],
+          "reconciled_at": 1795365021,
+          "reference": "invoice-three",
+          "state": "BLOCKED",
+          "supplier": "0x249543c98244012ca822561ea35ed5e891a399e8",
+          "terms_hash": "13da44e1ad64564188e04be0b2887a00859481284190e8e5696557633f146379"
+        },
+        {
+          "allocation": [
+            2,
+            0
+          ],
+          "basis_hash": "8cf47d2843dc86f85bfb51103ffe5dd3464a40fcc3ee5a919767df3a6380917d",
+          "basis_revision": 7,
+          "content_hash": "a03d6724b6261f8edbac60533e382cc213b17ec8ae6eaf51ee24d5335d9ee67d",
+          "created_at": 1795365074,
+          "id": "0x0affc7fc150cbd218990363bf1b421a09ab61629:workshop-return:invoice-two",
+          "lines": [
+            {
+              "description": "Steel hex-head bolt M8 x 30 mm, sold as one individual bolt.",
+              "quantity": 2,
+              "unit_price": 125
+            }
+          ],
+          "mapping": {
+            "rows": [
+              {
+                "invoice_quote": "Steel hex-head bolt M8 x 30 mm, sold as one individual bolt.",
+                "order_quote": "Steel hex-head bolt M8 x 30 mm, sold as one individual bolt.",
+                "status": "MATCH",
+                "target": 0
+              }
+            ]
+          },
+          "order_id": "0x0affc7fc150cbd218990363bf1b421a09ab61629:workshop-return",
+          "reasons": [],
+          "reconciled_at": 1795365109,
+          "reference": "invoice-two",
+          "state": "RESERVED",
+          "supplier": "0x249543c98244012ca822561ea35ed5e891a399e8",
+          "terms_hash": "13da44e1ad64564188e04be0b2887a00859481284190e8e5696557633f146379"
+        }
+      ]
+    },
+    "facilities-final": {
+      "order": {
+        "accepted": true,
+        "approved": [
+          0,
+          0
+        ],
+        "buyer": "0x0affc7fc150cbd218990363bf1b421a09ab61629",
+        "created_at": 1795365247,
+        "currency": "USD",
+        "events": [
+          {
+            "action": "ACCEPT_ORDER",
+            "actor": "0x249543c98244012ca822561ea35ed5e891a399e8",
+            "at": 1795365283,
+            "revision": 1,
+            "subject": "0x0affc7fc150cbd218990363bf1b421a09ab61629:facility-return"
+          },
+          {
+            "action": "RECEIVE",
+            "actor": "0x0affc7fc150cbd218990363bf1b421a09ab61629",
+            "at": 1795365326,
+            "revision": 2,
+            "subject": {
+              "quantities": [
+                8,
+                12
+              ],
+              "reference": "delivery-one"
+            }
+          },
+          {
+            "action": "PROPOSE_RETURN",
+            "actor": "0x0affc7fc150cbd218990363bf1b421a09ab61629",
+            "at": 1795365374,
+            "revision": 3,
+            "subject": "incorrect-damage-claim"
+          },
+          {
+            "action": "DECLINE_RETURN",
+            "actor": "0x249543c98244012ca822561ea35ed5e891a399e8",
+            "at": 1795365423,
+            "revision": 4,
+            "subject": "incorrect-damage-claim"
+          }
+        ],
+        "id": "0x0affc7fc150cbd218990363bf1b421a09ab61629:facility-return",
+        "invoice_ids": [],
+        "lines": [
+          {
+            "description": "Steel hex-head bolt M8 x 30 mm, sold as one individual bolt.",
+            "quantity": 12,
+            "unit_price": 125
+          },
+          {
+            "description": "Steel flat washer for M8 bolts, sold as one individual washer.",
+            "quantity": 20,
+            "unit_price": 25
+          }
+        ],
+        "receipt_refs": [
+          "delivery-one"
+        ],
+        "received": [
+          8,
+          12
+        ],
+        "reserved": [
+          0,
+          0
+        ],
+        "returned": [
+          0,
+          0
+        ],
+        "returns": {
+          "incorrect-damage-claim": {
+            "content_hash": "059fb884b10f32849cae7932112fb9054e8fcf224ca51ce1deb4339d8213fc79",
+            "order_id": "0x0affc7fc150cbd218990363bf1b421a09ab61629:facility-return",
+            "quantities": [
+              0,
+              3
+            ],
+            "reason": "Packaging claim awaiting supplier review.",
+            "reference": "incorrect-damage-claim",
+            "state": "DECLINED"
+          }
+        },
+        "revision": 4,
+        "supplier": "0x249543c98244012ca822561ea35ed5e891a399e8",
+        "terms_hash": "703280e045f2566b577570102d180eb5a422bf026e364948ac54c6b0b04e2165",
+        "title": "Facilities replenishment · declined credit"
+      },
+      "invoices": []
+    },
+    "depot-final": {
+      "order": {
+        "accepted": true,
+        "approved": [
+          0,
+          0
+        ],
+        "buyer": "0x0affc7fc150cbd218990363bf1b421a09ab61629",
+        "created_at": 1795365466,
+        "currency": "USD",
+        "events": [
+          {
+            "action": "ACCEPT_ORDER",
+            "actor": "0x249543c98244012ca822561ea35ed5e891a399e8",
+            "at": 1795365509,
+            "revision": 1,
+            "subject": "0x0affc7fc150cbd218990363bf1b421a09ab61629:depot-return"
+          },
+          {
+            "action": "RECEIVE",
+            "actor": "0x0affc7fc150cbd218990363bf1b421a09ab61629",
+            "at": 1795365559,
+            "revision": 2,
+            "subject": {
+              "quantities": [
+                10,
+                16
+              ],
+              "reference": "delivery-one"
+            }
+          },
+          {
+            "action": "PROPOSE_RETURN",
+            "actor": "0x0affc7fc150cbd218990363bf1b421a09ab61629",
+            "at": 1795365606,
+            "revision": 3,
+            "subject": "mixed-return"
+          },
+          {
+            "action": "CONFIRM_RETURN",
+            "actor": "0x249543c98244012ca822561ea35ed5e891a399e8",
+            "at": 1795365644,
+            "revision": 4,
+            "subject": "mixed-return"
+          },
+          {
+            "action": "PROPOSE_RETURN",
+            "actor": "0x0affc7fc150cbd218990363bf1b421a09ab61629",
+            "at": 1795365687,
+            "revision": 5,
+            "subject": "washer-return"
+          },
+          {
+            "action": "CONFIRM_RETURN",
+            "actor": "0x249543c98244012ca822561ea35ed5e891a399e8",
+            "at": 1795365725,
+            "revision": 6,
+            "subject": "washer-return"
+          },
+          {
+            "action": "PROPOSE_RETURN",
+            "actor": "0x0affc7fc150cbd218990363bf1b421a09ab61629",
+            "at": 1795365769,
+            "revision": 7,
+            "subject": "pending-inspection"
+          }
+        ],
+        "id": "0x0affc7fc150cbd218990363bf1b421a09ab61629:depot-return",
+        "invoice_ids": [],
+        "lines": [
+          {
+            "description": "Steel hex-head bolt M8 x 30 mm, sold as one individual bolt.",
+            "quantity": 12,
+            "unit_price": 125
+          },
+          {
+            "description": "Steel flat washer for M8 bolts, sold as one individual washer.",
+            "quantity": 20,
+            "unit_price": 25
+          }
+        ],
+        "receipt_refs": [
+          "delivery-one"
+        ],
+        "received": [
+          8,
+          11
+        ],
+        "reserved": [
+          0,
+          0
+        ],
+        "returned": [
+          2,
+          5
+        ],
+        "returns": {
+          "mixed-return": {
+            "content_hash": "929cb8f64ff88340751ca69e3c73e3488d1a526672a185f8fbe9ad2e7469aa5f",
+            "order_id": "0x0affc7fc150cbd218990363bf1b421a09ab61629:depot-return",
+            "quantities": [
+              2,
+              3
+            ],
+            "reason": "Stock condition verified by both signers.",
+            "reference": "mixed-return",
+            "state": "CONFIRMED"
+          },
+          "pending-inspection": {
+            "content_hash": "aa9a0670112bb41d5727483c5ebaa4e2f94d938656ba1c3a7e00eb60ecbd73dc",
+            "order_id": "0x0affc7fc150cbd218990363bf1b421a09ab61629:depot-return",
+            "quantities": [
+              1,
+              1
+            ],
+            "reason": "Awaiting supplier inspection.",
+            "reference": "pending-inspection",
+            "state": "PROPOSED"
+          },
+          "washer-return": {
+            "content_hash": "15883db26bbd35890ff8cdf5191e9554ad980d33a1963fe7b0d227518c7d2997",
+            "order_id": "0x0affc7fc150cbd218990363bf1b421a09ab61629:depot-return",
+            "quantities": [
+              0,
+              2
+            ],
+            "reason": "Stock condition verified by both signers.",
+            "reference": "washer-return",
+            "state": "CONFIRMED"
+          }
+        },
+        "revision": 7,
+        "supplier": "0x249543c98244012ca822561ea35ed5e891a399e8",
+        "terms_hash": "86a93de50ce6bb75009508fe2702a13a1d388b04e0b2132269733fc0f8d1be64",
+        "title": "Depot stock · multiple return notices"
+      },
+      "invoices": []
+    }
+  },
+  "success_count": 24,
+  "expected_rejection_count": 4
+}

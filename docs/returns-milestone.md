@@ -25,3 +25,13 @@ The [V2 deployment manifest](../public/deployment.json) points to a separate Sta
 ## Frontend validation
 
 Fifteen mock-host contract tests, five JavaScript tests, TypeScript and the production build passed. A read-only DOM smoke test mounted the production bundle against the live V2 RPC and exercised category focus, item selection and history navigation. Desktop and mobile rendering against the live contract were also verified in [Chromium CI](https://github.com/halihalibt/countseal-genlayer/actions/workflows/ci.yml). These read-only checks do not exercise browser-wallet signatures.
+
+## Demonstration records
+
+| Purchase order | Finalized result |
+| --- | --- |
+| [Workshop fasteners](https://halihalibt.github.io/countseal-genlayer/?order=0x0affc7fc150cbd218990363bf1b421a09ab61629%3Aworkshop-return) | Partial return reduced bolt capacity from 4 to 2. The 3-unit invoice was blocked and the 2-unit invoice reserved. Another return remains proposed after an attempted confirmation exceeded available capacity. |
+| [Facilities replenishment](https://halihalibt.github.io/countseal-genlayer/?order=0x0affc7fc150cbd218990363bf1b421a09ab61629%3Afacility-return) | Supplier declined the return. Net receipts stayed at 8 bolts and 12 washers. |
+| [Depot stock](https://halihalibt.github.io/countseal-genlayer/?order=0x0affc7fc150cbd218990363bf1b421a09ab61629%3Adepot-return) | Two confirmed returns total 2 bolts and 5 washers, leaving net receipts of 8 and 11. A third manifest awaits inspection. |
+
+The [live journal](../evidence/returns-live.json) contains 28 finalized transactions, including 24 successful executions and 4 deliberate contract rejections. [Independent verification](../evidence/returns-verification.json) maps transaction hashes to outcomes and records the final reads. The [API checks](../evidence/returns-api.json) cover read-only routing, deployment binding, order retrieval and CSV export.
