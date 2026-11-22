@@ -2,9 +2,9 @@
   "network": "Stable Studionet",
   "chain_id": 61999,
   "rpc": "https://studio.genlayer.com/api",
-  "contract": "0xAe839D5523b1577cF0f60ad87b2756fFd8Ac064c",
-  "source_sha256": "bc03f203f739135f3ce6d51fcaf7647199fe56a87ccc8696110f9ab1d6567065",
-  "protocol": "countseal-1",
-  "deploy_tx": "0x7402b5d244f084a675605ffbe0a826087c4983fc68a4492701c64dab1eb17ee6",
-  "verified_order": "0x84b8267b9ba03e7643ae0f8b7cc5eb7f7604e16b:workshop-purchase"
+  "contract": "0xeCaffC3A3e34E6010b3A32BE8b819A68590E74cd",
+  "source_sha256": "0a4896fef78840b19fe5ca89eb6cef931c2503e74abf5931a0f8af83edc020eb",
+  "protocol": "countseal-2",
+  "deploy_tx": "0x1b264534acdf788be2fa1ac36275c02e61c919eafdfc26042db2c98f120c3d67",
+  "verified_order": "0x0affc7fc150cbd218990363bf1b421a09ab61629:workshop-return"
 }

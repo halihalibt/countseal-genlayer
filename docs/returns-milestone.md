@@ -17,3 +17,7 @@ The new workspace includes a searchable order rail, an interactive 3D quantity l
 The recorded acceptance scenarios cover a partial return and invoice capacity change, a supplier decline that leaves capacity unchanged, cumulative multi-item returns, and inspections still awaiting supplier response.
 
 Milestone readiness depends on completed live verification and hosted workflow checking. [GenVM output](../evidence/returns-genvm-lint.json).
+
+## V2 deployment
+
+The [V2 deployment manifest](../public/deployment.json) points to a separate Stable Studionet deployment. The deployment transaction finalized successfully and the live runner read back identical source bytes. Business acceptance is tracked separately.
