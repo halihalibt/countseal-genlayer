@@ -1,7 +1,7 @@
 name: Test and build
 on:
   push:
-    branches: [main]
+    branches: [main, milestone/returns]
   pull_request:
 permissions:
   contents: read
@@ -20,3 +20,21 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build
+      - name: Verify the live returns workspace in Chromium
+        if: github.ref_name == 'milestone/returns'
+        run: |
+          npm exec --yes --package=playwright -- playwright install --with-deps chromium
+          npm run preview &
+          for attempt in {1..20}; do
+            if curl --fail --silent http://127.0.0.1:4175/ >/dev/null; then break; fi
+            sleep 1
+          done
+          mkdir -p artifacts/browser
+          npm exec --yes --package=playwright -- playwright screenshot --viewport-size="1512,1000" --wait-for-selector=".return-manifest details" --timeout=90000 http://127.0.0.1:4175/ artifacts/browser/desktop.png
+          npm exec --yes --package=playwright -- playwright screenshot --viewport-size="390,844" --wait-for-selector=".return-manifest details" --timeout=90000 http://127.0.0.1:4175/ artifacts/browser/mobile.png
+      - name: Upload browser screenshots
+        if: github.ref_name == 'milestone/returns'
+        uses: actions/upload-artifact@v4
+        with:
+          name: returns-workspace-chromium
+          path: artifacts/browser/
