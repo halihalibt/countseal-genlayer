@@ -24,4 +24,4 @@ The [V2 deployment manifest](../public/deployment.json) points to a separate Sta
 
 ## Frontend validation
 
-Fifteen mock-host contract tests, five JavaScript tests, TypeScript and the production build passed. A read-only DOM smoke test mounted the production bundle against the live V2 RPC and exercised category focus, item selection and history navigation. Chromium startup was blocked by the execution environment, so the smoke test does not certify layout rendering or browser-wallet signatures.
+Fifteen mock-host contract tests, five JavaScript tests, TypeScript and the production build passed. A read-only DOM smoke test mounted the production bundle against the live V2 RPC and exercised category focus, item selection and history navigation. Desktop and mobile rendering against the live contract were also verified in [Chromium CI](https://github.com/halihalibt/countseal-genlayer/actions/workflows/ci.yml). These read-only checks do not exercise browser-wallet signatures.

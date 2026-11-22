@@ -74,7 +74,7 @@ export function OrderList({ ids, selected, lastRead, issue, reading, onSelect }:
         )}
 
         {ids.length > 5 && (
-          <div style={{ position: 'relative', marginBottom: 12 }}>
+          <div className="order-switch-filter" style={{ position: 'relative', marginBottom: 12 }}>
             <Search
               size={15}
               style={{
